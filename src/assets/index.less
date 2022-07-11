@@ -1,0 +1,205 @@
+@import "./config.less";
+
+.table-list {
+    height: 39px;
+    border-radius: 4px;
+    border: 1px solid #e6e6e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333333;
+    font-size: 14px;
+    position: relative;
+    transition:all 0.4s ease-out;
+    &.active {
+        color: @table-border;
+        background: @table-background;
+        border: 1px solid @table-border;
+    }
+}
+
+.btn{
+    &-primary{
+        &.van-button--primary{
+            width: 100%;
+            height: 50px;
+            background: @btn-primary;
+            border-radius: 4px;
+            font-size: 16px;
+            color: @btn-color;
+            border: none;
+        }
+    }
+    &-danger{
+        &.van-button{
+            &--danger{
+                width: 100%;
+                height: 50px;
+                background: @btn-danger;
+                border-radius: 4px;
+                font-size: 16px;
+                border: none;
+            }
+            &--plain{
+                background:transparent;
+                border:1px solid @btn-danger;
+            }
+        }
+    }
+    &-default{
+        &.van-button{
+            &--default{
+                width: 100%;
+                height: 50px;
+                border-radius: 4px;
+                font-size: 16px;
+                border: 1px solid #666666;
+                font-size: 16px;
+                color: #666666;
+            }
+            &--plain{
+                background:transparent;
+            }
+        }
+    }
+    &-info{
+        &.van-button--info{
+            width: 100%;
+            height: 50px;
+            background: #6580FF;
+            border-radius: 4px;
+            font-size: 16px;
+            border: 1px solid #6580FF;
+            font-size: 16px;
+            color: #ffffff;
+        }
+        &.van-button--plain{
+            color: #6580FF;
+            background: transparent
+        }
+    }
+
+    &-fei{
+        &.van-button--default{
+            width: 100%;
+            height: 44px;
+            background: #999999;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #FFFFFF;
+        }
+        &-1{
+            &.van-button--default{
+                width: 100%;
+                height: 44px;
+                background: #eeeeee;
+                border-radius: 4px;
+                color: #666666;
+            }
+        }
+    }
+}
+
+// <div class="theAmountOf">
+//     <div class="fh">₹</div>
+//     <div class="jg">{{scope.row.value}}</div>
+// </div>
+.theAmountOf {
+    color: #2cbc94;
+    &-hong{
+        color: #FD5656;
+    }
+    display: flex;
+    align-items: baseline;
+    .fh {
+        font-size: 14px;
+        margin-right: 5px;
+    }
+    .jg {
+        font-size: 26px;
+    }
+}
+
+
+.h4 {
+    padding: 0px 12px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    &:before {
+        content: " ";
+        width: 4px;
+        height: 17px;
+        background: #2cbc94;
+        border-radius: 2px;
+        margin-top: 3px;
+        margin-right: 5px;
+    }
+}
+
+.cell {
+    /deep/.van-cell {
+        position: relative;
+        font-size: 14px;
+        color: #666666;
+        align-items: center;
+        .van-cell__title {
+            font-size: 12px;
+            color: #999999;
+        }
+    }
+    .van-icon-arrow {
+        font-size: 12px;
+        color: #999999;
+        margin-left: 5px;
+        &:before {
+            padding-top: 1px;
+        }
+    }
+    .copy {
+        width: 17px;
+        height: 17px;
+    }
+}
+
+.Footer {
+    position: fixed;
+    bottom: 10px;
+    left: 12px;
+    right: 12px;
+    /deep/.van-button {
+        height: 44px;
+    }
+}
+
+.login{
+    padding: 12px;
+    h3 {
+        font-size: 22px;
+        font-weight: bold;
+        color: #333333;
+        margin-top: 10px;
+        margin-bottom: 40px;
+        div {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 10px;
+            font-weight: initial;
+        }
+    }
+}
+
+.van-cell{
+    &-group--inset{
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>zhushibiaozhui2</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页自选区（我要买）" transform="translate(-12.000000, -247.000000)" fill="#2CBC94" fill-rule="nonzero">
+            <g id="提醒icon" transform="translate(0.000000, 228.000000)">
+                <g id="zhushibiaozhui2" transform="translate(12.000000, 19.000000)">
+                    <path d="M7,0 C3.13,0 0,3.13 0,7 C0,10.87 3.13,14 7,14 C10.87,14 14,10.87 14,7 C14,3.13 10.87,0 7,0 Z M8,10 C8,10.55 7.55,11 7,11 C6.45,11 6,10.55 6,10 L6,7 C6,6.45 6.45,6 7,6 C7.55,6 8,6.45 8,7 L8,10 Z M7,5 C6.45,5 6,4.55 6,4 C6,3.45 6.45,3 7,3 C7.55,3 8,3.45 8,4 C8,4.55 7.55,5 7,5 Z" id="形状"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

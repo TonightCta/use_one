@@ -1,0 +1,89 @@
+<!--
+ * @Name: 金额
+ * @Date: 2022-06-18 18:19:10
+ * @LastEditors: VSCode
+ * @LastEditTime: 2022-06-30 11:24:14
+-->
+<template>
+    <div class="transaction-amount">
+        <van-field class="input" v-model="value" placeholder="请输入目标金额">
+            <template #button>CNY</template>
+        </van-field>
+        <div class="choose ui-grid-3">
+            <template v-for="(item, index) in list">
+                <TableList :name="item" :index="index" v-model="active"></TableList>
+            </template>
+        </div>
+        <div class="btn">
+            <van-button type="default">重置</van-button>
+            <van-button type="primary">确定</van-button>
+        </div>
+    </div>
+</template>
+
+<script>
+import TableList from './table-list'
+
+export default {
+    components: {
+        TableList
+    },
+    data() {
+        return {
+            value: '',
+            list: ['100', '500', '1,000', '5,000', '10,000', '50,000'],
+            active: ''
+        }
+    },
+    methods: {
+        selected(index) {
+            if (this.active === index) {
+                this.active = '';
+            } else {
+                this.active = index;
+            }
+        }
+    }
+};
+</script>
+
+<style lang="less" scoped>
+@import "../assets/config.less";
+
+.transaction-amount {
+    padding: 0px 12px 12px 12px;
+    .input {
+        height: 35px;
+        background: #f8f8f8;
+        border-radius: 4px;
+        padding: 6px 10px;
+        /deep/.van-field__value {
+            .van-field__button {
+                color: #666666;
+                font-size: 12px;
+            }
+        }
+    }
+    .choose {
+        padding-top: 12px;
+    }
+    .btn {
+        padding-top: 20px;
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 17px;
+        .van-button {
+            height: 40px;
+            border-radius: 4px;
+            &.van-button--default {
+                background: @btn-default;
+                border: 1px solid @btn-default;
+            }
+            &.van-button--primary {
+                background: @btn-primary;
+                border: 1px solid @btn-primary;
+            }
+        }
+    }
+}
+</style>

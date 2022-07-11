@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="7px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 10</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="首页自选区（我要买）" transform="translate(-309.000000, -251.000000)" stroke="#2CBC94">
+            <g id="提醒icon" transform="translate(0.000000, 228.000000)">
+                <g id="编组-10" transform="translate(260.000000, 14.000000)">
+                    <g id="实名箭头" transform="translate(49.000000, 9.000000)">
+                        <polyline id="路径-3" opacity="0.5" points="2 1 4.5 3.5 2 6"></polyline>
+                        <polyline id="路径-3备份" opacity="0.800000012" points="8 1 10.5 3.5 8 6"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
