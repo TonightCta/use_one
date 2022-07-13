@@ -9,7 +9,6 @@
         <P-main class="login" v-show="!bool.SelectArea">
             <Navigation :languageSwitch="true" />
             <h3>{{$t('密码登录')}}</h3>
-
             <el-form :model="form" ref="form" :rules="rules" label-position="top">
                 <el-form-item prop="phone" v-if="!email">
                     <P-input :title="$t('手机')" :iconBorder="true" v-model="form.phone" :placeholder="$t('请输入手机号码')">

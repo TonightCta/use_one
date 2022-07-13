@@ -38,7 +38,8 @@ export default {
     },
     methods: {
         onPay(row) {
-            this.language = row.name
+            this.language = row.name;
+            this.$store.commit('current/upLanguage',this.language);
             localStorage.locale = this.language
             this.$router.go(0)
         }
@@ -47,6 +48,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.pay{
+    margin-top: 6px;
+}
 .van-icon-success {
     color: #2cbc94;
     font-size: 20px;

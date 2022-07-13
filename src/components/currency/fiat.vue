@@ -9,7 +9,7 @@
         <P-index-bar :data="list" label="coin">
             <template #head>
                 <div class="title m-10-t">常用法币</div>
-                <van-cell v-for="(item, index) in cylist" :border="index == (cylist.length-1) ? false : true"
+                <van-cell v-for="(item, index) in cylist" :key="index" :border="index == (cylist.length-1) ? false : true"
                     @click="selected(item)">
                     <template #title>
                         <div class="ui-flex-left">
@@ -22,8 +22,8 @@
                 </van-cell>
                 <div class="title m-22-t m-12-b">所有法币</div>
             </template>
-            <template #body="{row, index}">
-                <van-cell v-for="(item, index) in row" @click="selected(item)">
+            <template #body="{row}">
+                <van-cell v-for="(item, indexInner) in row" :key="indexInner" @click="selected(item)">
                     <template #title>
                         <div class="ui-flex-left">
                             <div class="ui-flex m-5-r">
@@ -70,7 +70,8 @@ export default {
     methods: {
         async onCoins() {
             const response = await API.GetData(this, 'c2c/coins')
-            this.list = response
+            this.list = response;
+            console.log(response)
             this.cylist = this.list.filter((item) => {
                 if (item.hot == 1) {
                     return item

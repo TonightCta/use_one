@@ -59,6 +59,9 @@ export default {
             count: 0
         }
     },
+    created(){
+        this.getVerificationCode()
+    },  
     watch: {
         val(v) {
             if (v.length === 6) {

@@ -101,7 +101,7 @@ export default {
                 { title: '订单编号', value: '02414555444584415565', border: false },
                 { title: '下单时间', value: '2022-10-12 10:36:23', border: false },
             ],
-            date: new Date("2022/06/23 23:30:00").getTime() / 1000
+            date: new Date("2022/07/23 23:30:00").getTime() / 1000
         }
     },
     watch: {
@@ -120,7 +120,7 @@ export default {
         //取消订单
         cancelTheOrder(v) {
             v.show = false;
-            this.state.index = 1
+            this.state.index = 1    
         },
         onPayChoose(row) {
             this.$router.push({

@@ -89,6 +89,7 @@ export default {
     /deep/.title {
         font-size: 14px;
         color: #666666;
+        justify-content: center;
         .icon-svg {
             width: 11px !important;
             height: 20px !important;

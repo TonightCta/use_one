@@ -6,6 +6,7 @@
 -->
 <template>
     <P-main>
+        <!-- 头部信息 -->
         <div class="head">
             <div class="ui-flex-center">
                 <div class="ui-flex-1"></div>
@@ -15,14 +16,14 @@
                     <B-svg name="xiala-2" width="12" />
                 </div>
                 <div class="ui-flex-1 ui-flex-right">
-                    <div class="options ui-flex-row" v-if="dropdown.value == 0">
-                        <div class="name">INR</div>
+                    <div class="options ui-flex-row" @click="bool.CurrencyOption = true" v-if="dropdown.value == 0">
+                        <div class="name">{{typeCoin}}</div>
                         <B-svg name="jianTouXia" class-name="jianTouXia" />
                     </div>
                 </div>
             </div>
         </div>
-
+        <!-- 买 / 卖 选项卡 -->
         <van-sticky>
             <div class="head-nav ui-flex-center">
                 <div>
@@ -46,7 +47,7 @@
                     <P-tabs class="ui-hx m-12-lr" v-model="tabs.active" :list="tabs.list" />
                 </div>
             </div>
-            <TheDropDownOptions v-if="dropdown.value == 0" />
+            <TheDropDownOptions v-if="dropdown.value == 0" :buyOrSell="headNav.active"/>
             <Authentication />
         </van-sticky>
 
@@ -65,6 +66,7 @@
                     @click="dropdown.value = item.value;bool.TopShow = false" />
             </van-cell-group>
         </P-popup>
+        <Currency-Option v-model="bool.CurrencyOption" @click="onCurrency" />
     </P-main>
 </template>
 
@@ -79,14 +81,17 @@ export default {
         IWantToSell: () => import("./components/IWantToSell"),
         Buy: () => import("./components/buy"),
         Authentication: () => import("@/components/authentication"),
+        CurrencyOption:() => import("@/components/currency"),
         TheDropDownOptions,
         More,
         MoneySafe
     },
     data() {
         return {
+            typeCoin:'INR',
             bool: {
-                TopShow: false
+                TopShow: false,
+                CurrencyOption:false,
             },
             headNav: {
                 active: 0,
@@ -155,6 +160,10 @@ export default {
         window.addEventListener('scroll', this.handleScroll)
     },
     methods: {
+        onCurrency(val){
+            console.log(val);
+            this.typeCoin = val.coin;
+        },  
         onHeadNav(i) {
             if (this.headNav.active === i) {
                 return
@@ -230,7 +239,8 @@ export default {
     }
 
     .options {
-        width: 50px;
+        min-width: 50px;
+        padding: 0 6px;
         height: 21px;
         background: #ffffff33;
         border-radius: 11px;

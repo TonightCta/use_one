@@ -11,6 +11,8 @@ import personalized from 'vue-personalized'
 import 'vue-personalized/index.css'
 Vue.use(personalized)
 
+import '../assets/iconfont/iconfont.css'
+
 import '../libs/ElementUI/index'
 
 import '../libs/ViewUI/index'

@@ -1,0 +1,51 @@
+{
+  "id": "3517041",
+  "name": "OTC",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "30563562",
+      "name": "attention",
+      "font_class": "attention",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "30531208",
+      "name": "jiaoyiguanli",
+      "font_class": "jiaoyiguanli",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "30531209",
+      "name": "shouji-2",
+      "font_class": "shouji-2",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "30531211",
+      "name": "weibiaoti--",
+      "font_class": "weibiaoti--",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "30531212",
+      "name": "youxiang",
+      "font_class": "youxiang",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "30531218",
+      "name": "gicon",
+      "font_class": "gicon",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    }
+  ]
+}

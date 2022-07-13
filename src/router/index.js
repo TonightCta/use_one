@@ -7,6 +7,8 @@ import order from './order'
 import login from './login'
 import ad from './ad'
 import bankCard from './bankCard'
+import setting from './setting'
+import safty from './safty'
 
 import Home from '@/views/index'
 Vue.use(VueRouter)
@@ -115,10 +117,24 @@ const routes = [
         },
         component: resolve => require(['@/views/language/index'], resolve)
     },
+    {
+        path: '/choose-amount-way',
+        name: 'AmountWay',
+        meta: {
+            title: '计价方式',
+            content: {
+                keywords: '计价方式',
+                description: '计价方式'
+            },
+        },
+        component: resolve => require(['@/views/mine/setting/chose_amount_way'], resolve)
+    },
     ...order,
     ...login,
     ...ad,
-    ...bankCard
+    ...bankCard,
+    ...setting,
+    ...safty
 ]
 
 const router = new VueRouter({

@@ -26,7 +26,7 @@
                             </div>
                         </div>
                     </P-input>
-                </el-form-item>
+                </el-form-item>      
 
                 <el-form-item prop="email" v-if="active == 1">
                     <P-input v-model="ruleForm.email" icon="icon-youxiang" :placeholder="$t('请输入邮箱')" />
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { stringify } from 'querystring';
 import SelectArea from './selectArea'
 
 export default {
@@ -155,11 +156,16 @@ export default {
             });
         },
         async checkAvailable() {
+            // console.log(typeof parseInt(this.list[this.active].id))
+            // console.log(typeof this.ruleForm.email)
+            // console.log(typeof this.ruleForm.phone)
+            // console.log(typeof this.ruleForm.phone_prefix)
+            // return
             let response = await this.$store.dispatch('registered/checkAvailable', {
-                type: this.list[this.active].id,
-                email: this.ruleForm.email,
+                type: parseInt(this.list[this.active].id),
+                email: this.ruleForm.email ? this.ruleForm.email : '',
                 phone: this.ruleForm.phone,
-                phone_prefix: this.ruleForm.phone_prefix
+                phone_prefix: String(this.ruleForm.phone_prefix)
             })
             this.$emit('click', response, this.ruleForm)
         }

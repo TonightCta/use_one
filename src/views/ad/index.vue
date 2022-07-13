@@ -7,7 +7,7 @@
         </Navigation>
         <P-body type="Fei">
             <P-list ref="P-list" :footer="true" theme="card" @refresh="onRefresh" @load="onList">
-                <template v-slot="{row, index}">
+                <template v-slot="{row}">
                     <B-a :href="`/advertisingfordetails/${row.id}`">
                         <Advertising-list :name="row.name" :Price="row.Price" :badge="row.number" :date="row.datetime"
                             :state="row.number" @operation="operation(row)" />

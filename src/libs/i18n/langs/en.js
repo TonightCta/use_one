@@ -41,6 +41,7 @@ module.exports = {
     '参数校验失败': 'Parameter verification failure',
     '手机号码已经存在': 'The mobile phone number already exists',
     '重置密码': 'To reset your password',
+    '设置':'Setting',
     '': '',
     '': '',
     '': '',

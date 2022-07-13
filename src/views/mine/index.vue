@@ -130,8 +130,8 @@ export default {
                 { svg: 'gr-dingdan', title: '我的订单', 'islink': true, to: '/order' },
                 { svg: 'gr-shoukuanfangshi', title: '收款方式', 'islink': true, to: '/bankcard' },
                 { svg: 'gr-bangzhuzhongxin', title: '帮助中心', 'islink': true },
-                { svg: 'gr-anquanzhongxin', title: '安全中心', 'islink': true },
-                { svg: 'gr-shezhi', title: '设置', 'islink': true }
+                { svg: 'gr-anquanzhongxin', title: '安全中心', 'islink': true ,to: "/safty"},
+                { svg: 'gr-shezhi', title: '设置', 'islink': true ,to: "/setting"}
             ]
         }
     },

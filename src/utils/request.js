@@ -16,7 +16,7 @@ const service = axios.create({
     timeout: 1000 * 60 * 10,
     headers: {
         'Accept': '*/*',
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
     }
 });
 
@@ -79,7 +79,7 @@ export function post(url, data) {
         service({
             method: 'post',
             url,
-            data: qs.stringify(data)
+            data: data
         }).then(res => {
             resolve(res)
         }).catch(err => {

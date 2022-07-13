@@ -18,12 +18,19 @@
             </van-dropdown-menu>
         </div>
         <div class="right">
-            <van-dropdown-menu active-color="#2cbc94">
+            <van-dropdown-menu active-color="#2cbc94" v-if="buyOrSell == 1">
                 <van-dropdown-item title="更多筛选">
-                    12
+                    12{{buyOrSell}}
                 </van-dropdown-item>
             </van-dropdown-menu>
+            <div class="buy-more-filter" v-else @click.stop="buyMoreFilter.show = true">
+                更多筛选
+            </div>
         </div>
+        <!-- 买入 - 更多筛选 -->
+        <P-popup v-model="buyMoreFilter.show" :head="false">
+            12
+        </P-popup>
     </div>
 </template>
 
@@ -32,16 +39,31 @@ import MethodOfPayment from './methodOfPayment'
 import TheAmountOf from './TheAmountOf'
 
 export default {
+    props:{
+        buyOrSell:{
+            type:Number,
+            default:0
+        }
+    },
     components: {
         MethodOfPayment,
         TheAmountOf
     },
     data() {
         return {
+            buyMoreFilter:{
+                show:false,
+                value:0,
+                options:{
 
+                }
+            },
         };
     },
     methods: {
+        testClick(){
+            console.log(123)
+        }
     }
 };
 </script>
@@ -75,6 +97,23 @@ export default {
                     margin-right: 20px;
                 }
             }
+        }
+        .buy-more-filter{
+            font-size: 15px;
+            padding-right: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        .buy-more-filter::after{
+            position: absolute;
+            top:50%;
+            right: 16px;
+            margin-top: -5px;
+            border: 3px solid;
+            transform: rotate(-45deg);
+            opacity: .8;
+            content: '';
+            border-color: transparent transparent #666 #666;
         }
     }
 }

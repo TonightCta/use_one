@@ -172,6 +172,9 @@ export default {
         //搜索取消
         onCancel() {
             this.keyword = ''
+            this.$emit('click-cancel')
+            // console.log(123213);
+
         },
         //头部返回按钮是否自定义实践 ClickLeft 等于 false 执行
         onClickLeft() {
