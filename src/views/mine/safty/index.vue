@@ -1,4 +1,8 @@
-<!-- 安全中心 -->
+<!--
+  * @NAME 安全中心
+  * @DATE 2022-07-13
+  * @AUTHOR CT
+-->
 <template>
   <div class="safty-center">
     <Navigation title="安全中心"/>
@@ -38,8 +42,8 @@ export default {
           {
             icon:'icon-shouji-2',
             title:'手机认证',
-            // url:'/auth-phone',
-            url:'/edit-phone'
+            url:'/auth-phone',
+            // url:'/edit-phone'
           },
           {
             icon:'icon-gicon',

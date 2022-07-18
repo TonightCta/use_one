@@ -57,7 +57,7 @@
                         <div class="icon">
                             <B-svg name="miMa" className="miMa"></B-svg>
                         </div>
-                        <div class="title">实名认证</div>
+                        <div class="title">交易密码</div>
                         <div class="operation">
                             <template v-if="jymmbool">
                                 <div class="wc">

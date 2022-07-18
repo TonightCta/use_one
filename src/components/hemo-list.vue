@@ -9,7 +9,7 @@
     <div class="list">
         <div class="header ui-flex-center">
             <ul class="left">
-                <li>
+                <li @click="$router.push('/chant-center')">
                     <van-image round width="20" height="20" lazy-load src="https://img01.yzcdn.cn/vant/cat.jpeg" />
                 </li>
                 <li class="name">{{ name.shenglue(10) }}</li>

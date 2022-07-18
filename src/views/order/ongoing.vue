@@ -7,7 +7,7 @@
 <template>
     <P-main>
         <div>
-            <P-nav left-arrow :border="false" :fixed="true" :placeholder="true">
+            <P-nav :left-arrow="$route.query.outback == 1" :border="false" :fixed="true" :placeholder="true">
                 <template #title>
                     <div class="nav-container ui-flex-row">
                         <div class="ongoing active">进行中</div>

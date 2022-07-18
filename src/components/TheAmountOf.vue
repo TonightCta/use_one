@@ -10,9 +10,9 @@
             <template #button>CNY</template>
         </van-field>
         <div class="choose ui-grid-3">
-            <template v-for="(item, index) in list">
+            <div v-for="(item, index) in list" :key="index">
                 <TableList :name="item" :index="index" v-model="active"></TableList>
-            </template>
+            </div>
         </div>
         <div class="btn">
             <van-button type="default">重置</van-button>

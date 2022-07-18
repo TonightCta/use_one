@@ -6,7 +6,7 @@
 -->
 
 <template>
-    <div class="order">
+    <div class="order" @click="$router.push(`/pleasepayment/${id}`)">
         <div class="head ui-flex-center ui-hx">
             <div class="left ui-flex-row">
                 <div class="h4">购买</div>
@@ -55,6 +55,11 @@ export default {
         WeiXinXi
     },
     props: {
+        // 订单ID
+        id:{
+            type:Number,
+            default:0
+        },  
         //按钮名称
         btnName: {
             type: String,
@@ -81,7 +86,10 @@ export default {
             type: String,
             default: ''
         }
-    }
+    },
+    // created(){
+    //     console.log(this.id)
+    // },
 };
 </script>
 

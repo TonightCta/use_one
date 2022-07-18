@@ -9,6 +9,8 @@ import ad from './ad'
 import bankCard from './bankCard'
 import setting from './setting'
 import safty from './safty'
+import asstes from './asstes'
+import chant from './chant'
 
 import Home from '@/views/index'
 Vue.use(VueRouter)
@@ -134,7 +136,9 @@ const routes = [
     ...ad,
     ...bankCard,
     ...setting,
-    ...safty
+    ...safty,
+    ...asstes,
+    ...chant
 ]
 
 const router = new VueRouter({

@@ -1,6 +1,6 @@
 <template>
     <P-main>
-        <Navigation title="我的广告" :class="[bool.ScreeningClass ? 'navigation':'']">
+        <Navigation title="我的广告" :left-arrow="false" :class="[bool.ScreeningClass ? 'navigation':'']">
             <template #right>
                 <B-svg name="shaixuan" @click="openScreening(true)" />
             </template>

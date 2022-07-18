@@ -7,7 +7,7 @@
 <template>
     <P-list ref="P-list" :footer="true" theme="card" @refresh="onRefresh" @load="onList">
         <template v-slot="{row}">
-            <Order-list :name="row.name" :Price="row.Price" :badge="row.number" :date="row.datetime"></Order-list>
+            <Order-list :id="row.id" :name="row.name" :Price="row.Price" :badge="row.number" :date="row.datetime"></Order-list>
         </template>
     </P-list>
 </template>

@@ -79,8 +79,8 @@
 export default {
   data() {
     return {
-      gooleType: 2, //1 - 设置 2 - 解除
-      removeStatus:true,
+      gooleType: 1, //1 - 设置 2 - 解除
+      removeStatus:false,
       downWay: [
         {
           type: "Android：",

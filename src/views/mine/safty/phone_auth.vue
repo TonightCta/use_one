@@ -77,6 +77,7 @@ export default {
     };
     return {
       count: 0,
+      // 设置手机号
       form: {
         phone_prefix: "",
         phone: "",
@@ -105,7 +106,7 @@ export default {
           { required: true, message: this.$t("请输入验证码"), trigger: "blur" },
           { validator: verify_code, trigger: "blur" },
         ],
-      },
+      }, 
       NationalNumber: {
         code: "",
         logo: "",

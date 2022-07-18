@@ -31,7 +31,7 @@ export default {
                 {
                     name: '订单',
                     icon: 'dingDan',
-                    path: '/order'
+                    path: '/order?outback=0'
                 },
                 {
                     name: '广告',

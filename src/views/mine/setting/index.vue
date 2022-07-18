@@ -14,10 +14,12 @@
     </div>
     <van-cell title="当前版本" value="3.2.0" is-link />
     <div class="login-out">
-      <P-button type="primary" class="btn-default" @click="askLoginOut = true">退出登录</P-button>
+      <P-button type="primary" class="btn-default" @click="askLoginOut = true"
+        >退出登录</P-button
+      >
     </div>
     <Alert title="提示" v-model="askLoginOut" @click="turnLoginOut">
-        <p style="text-align:center;">确认退出登录吗?</p>
+      <p style="text-align: center">确认退出登录吗?</p>
     </Alert>
   </div>
 </template>
@@ -28,7 +30,7 @@ export default {
   components: {
     Navigation: (resolve) =>
       require(["../../../components/nav/Navigation"], resolve),
-    Alert:resolve => require(['../../../components/Alert'],resolve)
+    Alert: (resolve) => require(["../../../components/Alert"], resolve),
   },
   computed: {
     ...mapState(["current"]),
@@ -49,14 +51,19 @@ export default {
           type: 1,
         },
       ],
-      askLoginOut:false,
+      askLoginOut: false,
     };
   },
-  methods:{
-    turnLoginOut(){
-        console.log(123)
-    },  
-  },    
+  methods: {
+    turnLoginOut() {
+      const d = new Date();
+      const exdays = -1;
+      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+      const expires = "expires=" + d.toUTCString();
+      document.cookie = "Admin-Token='';" + expires;
+      this.$router.push('/')
+    },
+  },
   mounted() {
     this.$set(
       this.setList[0],

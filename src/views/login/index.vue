@@ -51,28 +51,22 @@
                 <B-a href="/forgotpassword">{{$t('忘记密码')}}?</B-a>
             </div>
         </P-main>
-        <SelectArea v-model="bool.SelectArea" @click="onSelectArea" />
+        <SelectArea v-model="bool.SelectArea" @click="onSelectArea"  @close-area="closeArea"/>
     </div>
 </template>
 
 <script>
-import SelectArea from './components/selectArea'
+import SelectArea from './components/selectArea';
+import { UserInfo } from '../../api/api'
 
 export default {
     components: { SelectArea },
     data() {
         const validationPhone = (rule, value, callback) => {
-            // if (this.form.phone_prefix == '') {
-            //     callback(new Error(this.$t('请选择国家区号')));
-            // } else {
-            if (value.length != 11) {
-                callback(new Error(this.$t('手机号应为11位数')));
-            } else {
-                if (value.RegExp("手机")) {
-                    callback();
-                } else {
-                    callback(new Error(this.$t('手机号格式错误')));
-                }
+            if (this.form.phone_prefix == '') {
+                callback(new Error(this.$t('请选择国家区号')));
+            }else {
+               callback()
             }
             // }
         }
@@ -87,9 +81,9 @@ export default {
             email: false,
             form: {
                 phone_prefix: '',
-                phone: '13885676831',
-                email: '10000@qq.com',
-                password: 'a123123123'
+                phone: '',
+                email: '',
+                password: ''
             },
             rules: {
                 phone: [
@@ -120,6 +114,9 @@ export default {
         },
     },
     methods: {
+        closeArea(){
+            this.bool.SelectArea = false;
+        },  
         switchEmail(bool) {
             this.email = bool
             this.$refs['form'].resetFields();
@@ -150,6 +147,14 @@ export default {
             this.$toast.clear();
 
             if (response.code == 200) {
+                const result = await UserInfo(response.data.access_token);
+                const { code,data } = result;
+                if(code != 200){
+                    this.$toast('登录异常，请稍后再试');
+                    router.currentRoute
+                }
+                console.log(code,data);
+                this.$store.commit('current/upAccount',data)
                 this.$router.push({
                     path: this.ReturnUrl
                 })

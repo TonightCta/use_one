@@ -97,4 +97,18 @@ export default [
         },
         component:resolve => require(['@/views/mine/safty/trade_auth'],resolve)
     },
+    {
+        path:'/auth-real',
+        name:'AuthReal',
+        meta:{
+            title:'实名认证',
+            content:{
+                keywords:'实名认证',
+                description:'实名认证'
+            },
+            keepAlive:false,
+            permission:true
+        },
+        component:resolve => require(['@/views/mine/safty/real_auth'],resolve)
+    },
 ]
