@@ -5,7 +5,7 @@
       <h3>更换手机号码</h3>
       <el-form :model="form" ref="form" :rules="ruleForm" label-position="top">
         <!-- 原手机号验证码 -->
-        <el-form-item prop="code">
+        <el-form-item prop="code" v-if="false">
           <P-input title="原手机号验证码" placeholder="请输入验证码"> </P-input>
           <p class="send-code-text" v-if="count == 0" @click="count = 60">
             {{ $t("获取验证码") }}
@@ -97,16 +97,16 @@ export default {
       count: 0,
       // 设置手机号
       form: {
-        nowPhone_code: "",
+        // nowPhone_code: "",
         phone_prefix: "",
         phone: "",
         password: "",
         code: "",
       },
       ruleForm: {
-        nowPhone_code: [
-          { required: true, message: this.$t("请输入验证码"), trigger: "blur" },
-        ],
+        // nowPhone_code: [
+        //   { required: true, message: this.$t("请输入验证码"), trigger: "blur" },
+        // ],
         phone: [
           { required: true, message: this.$t("请输入手机号"), trigger: "blur" },
           { validator: verify_phone, trigger: "blur" },

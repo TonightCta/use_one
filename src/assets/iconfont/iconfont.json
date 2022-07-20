@@ -6,18 +6,18 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7594476",
+      "name": "24gf-eyeHide",
+      "font_class": "24gf-eyeHide",
+      "unicode": "eaa0",
+      "unicode_decimal": 60064
+    },
+    {
       "icon_id": "7312822",
       "name": "关闭",
       "font_class": "guanbi-",
       "unicode": "e617",
       "unicode_decimal": 58903
-    },
-    {
-      "icon_id": "30657721",
-      "name": "编组 22",
-      "font_class": "a-bianzu22",
-      "unicode": "e616",
-      "unicode_decimal": 58902
     },
     {
       "icon_id": "30609471",
@@ -81,13 +81,6 @@
       "font_class": "a-bianzu3",
       "unicode": "e60e",
       "unicode_decimal": 58894
-    },
-    {
-      "icon_id": "30578988",
-      "name": "编组 6",
-      "font_class": "a-bianzu6",
-      "unicode": "e60d",
-      "unicode_decimal": 58893
     },
     {
       "icon_id": "5037719",

@@ -5,24 +5,36 @@
 -->
 <template>
   <div class="safty-center">
-    <Navigation title="安全中心"/>
+    <Navigation title="安全中心" />
     <div class="list-top">
-      <van-cell is-link value="设置" v-for="(cell,index) in listTop" :key="index" :to="cell.url">
+      <van-cell
+        is-link
+        :value="cell.val"
+        v-for="(cell, index) in listTop"
+        :key="index"
+        :to="cell.url"
+      >
         <template #title>
-            <div class="cell-title">
-              <p class="iconfont " :class="cell.icon" type="icon"></p>
-              <p>{{cell.title}}</p>
-            </div>
+          <div class="cell-title">
+            <p class="iconfont" :class="cell.icon" type="icon"></p>
+            <p>{{ cell.title }}</p>
+          </div>
         </template>
       </van-cell>
     </div>
     <div class="list-top">
-      <van-cell is-link value="设置" v-for="(cell,index) in listBottom" :key="index" :to="cell.url">
+      <van-cell
+        is-link
+        value="设置"
+        v-for="(cell, index) in listBottom"
+        :key="index"
+        :to="cell.url"
+      >
         <template #title>
-            <div class="cell-title">
-              <p class="iconfont" :class="cell.icon" type="icon"></p>
-              <p>{{cell.title}}</p>
-            </div>
+          <div class="cell-title">
+            <p class="iconfont" :class="cell.icon" type="icon"></p>
+            <p>{{ cell.title }}</p>
+          </div>
         </template>
       </van-cell>
     </div>
@@ -30,27 +42,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data(){
       return{
-        listTop:[
-          {
-            icon:'icon-youxiang',
-            title:'邮箱认证',
-            url:'/auth-email'
-          },
-          {
-            icon:'icon-shouji-2',
-            title:'手机认证',
-            url:'/auth-phone',
-            // url:'/edit-phone'
-          },
-          {
-            icon:'icon-gicon',
-            title:'谷歌认证',
-            url:'/auth-google'
-          },
-        ],
         listBottom:[
           {
             icon:'icon-weibiaoti--',
@@ -65,6 +60,32 @@ export default {
         ]
       }
     },
+    computed:{
+      ...mapState(['current']),
+      listTop(){
+        return [
+          {
+            icon:'icon-youxiang',
+            title:'邮箱认证',
+            url:'/auth-email',
+            val:this.current.account.email ? '修改' : '设置'
+          },
+          {
+            icon:'icon-shouji-2',
+            title:'手机认证',
+            url:'/auth-phone',
+            // url:'/edit-phone'
+            val:this.current.account.phone ? '修改' : '设置'
+          },
+          {
+            icon:'icon-gicon',
+            title:'谷歌认证',
+            url:'/auth-google',
+            val:this.current.account.security.ga == 1 ? '解除' : '绑定'
+          },
+        ]
+      }
+    },
     components:{
         Navigation:resolve => require(['../../../components/nav/Navigation'],resolve)
     }
@@ -72,23 +93,22 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.safty-center{
-    width: 100%;
-    height: 100vh;
-    background: #f2f2f2;
-    .list-top{
-      margin-top: 6px;
-      .cell-title{
-        display: flex;
-        align-items: center;
-        p[type="icon"]{
-          font-size: 16px;
-          border-radius: 50%;
-          margin-right: 6px;
-          color: #333;
-        }
+.safty-center {
+  width: 100%;
+  height: 100vh;
+  background: #f2f2f2;
+  .list-top {
+    margin-top: 6px;
+    .cell-title {
+      display: flex;
+      align-items: center;
+      p[type="icon"] {
+        font-size: 16px;
+        border-radius: 50%;
+        margin-right: 6px;
+        color: #333;
       }
     }
+  }
 }
-
 </style>

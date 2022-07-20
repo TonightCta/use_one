@@ -5,7 +5,12 @@
     <div class="auth-content auth-before" v-if="beforeAuth == 1">
       <h3>密码验证</h3>
       <p class="auth-remark">为保护您的账号安全，需要登录密码进行验证</p>
-      <el-form :rules="authFormRule" :model="authForm" label-position="top">
+      <el-form
+        ref="check"
+        :rules="authFormRule"
+        :model="authForm"
+        label-position="top"
+      >
         <el-form-item prop="password">
           <P-input
             title="登录密码"
@@ -19,12 +24,12 @@
         style="margin-top: 40px"
         type="primary"
         class="btn-primary"
-        @click="beforeAuth = 2"
+        @click="checkPass('check')"
         >下一步</P-button
       >
     </div>
     <div class="auth-content" v-else>
-      <h3>邮箱认证</h3>
+      <h3>邮箱{{ current.account.email ? "修改" : "认证" }}</h3>
       <el-form :model="form" ref="form" :rules="ruleForm" label-position="top">
         <el-form-item prop="email">
           <P-input
@@ -40,7 +45,7 @@
             placeholder="请输入验证码"
           >
           </P-input>
-          <p class="send-code-text" v-if="count == 0" @click="count = 60">
+          <p class="send-code-text" v-if="count == 0" @click="sendCode">
             {{ $t("获取验证码") }}
           </p>
           <B-data-theCountdown v-model="count" v-else
@@ -59,7 +64,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { checkEmail } from "../../../utils/index";
+import { CheckPass, SendCode, BindEmail } from "../../../api/api";
 export default {
   data() {
     const verify_email = (rule, value, callback) => {
@@ -78,6 +85,7 @@ export default {
     };
     return {
       beforeAuth: 1, // 1 - 未验证 2 - 已验证
+      emailCode: "", //邮箱验证码
       authForm: {
         password: "",
       },
@@ -115,11 +123,63 @@ export default {
     Navigation: (resolve) =>
       require(["../../../components/nav/Navigation"], resolve),
   },
+  computed: {
+    ...mapState(["current"]),
+  },
   methods: {
-    submitEmail(formName) {
-      this.$refs[formName].validate((res) => {
+    checkPass(formName) {
+      this.$refs[formName].validate(async (res) => {
         if (res) {
-          console.log("验证通过");
+          const result = await CheckPass({ password: this.authForm.password });
+          const { code } = result;
+          if (code != 200) {
+            this.$toast(result.message);
+            return;
+          }
+          this.$toast.loading({
+            message: "加载中...",
+            forbidClick: true,
+          });
+          this.beforeAuth = 2;
+        }
+      });
+    },
+    //发送验证码
+    async sendCode() {
+      if (!this.form.email) {
+        this.$toast("请输入邮箱地址");
+        return;
+      } else if (!checkEmail(this.form.email)) {
+        this.$toast("请输入正确的邮箱地址");
+        return;
+      } else {
+        const params = {
+          scene: 3,
+          type: 2,
+          email: this.form.email,
+        };
+        const result = await SendCode(params);
+        this.count = 60;
+        this.$toast.success("验证码发送成功");
+        this.emailCode = result.data.code;
+      }
+    },
+    //提交邮箱绑定
+    submitEmail(formName) {
+      this.$refs[formName].validate(async (res) => {
+        if (res) {
+          const params = {
+            email: this.form.email,
+            password: this.authForm.password,
+            code: this.form.code,
+          };
+          const result = await BindEmail(params);
+          const { code } = result;
+          if (code == 200) {
+            this.$toast.success("认证成功");
+            this.$store.dispatch("current/upUserInfo");
+            this.$router.go(-1);
+          }
         }
       });
     },

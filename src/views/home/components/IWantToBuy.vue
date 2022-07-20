@@ -65,7 +65,7 @@ export default {
         dialog: false,
         is_need_auth: false,
       },
-      test:true,
+      test: true,
       list: [],
       loading: false,
       finished: false, //是否已加载完成，加载完成后不再触发load事件

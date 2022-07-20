@@ -142,7 +142,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-    mode: "history",//hash history
+    mode: "hash",//hash history
     routes
 })
 
@@ -188,6 +188,7 @@ router.beforeEach((to, from, next) => {
     } else {
         next()
     }
+    // next()
 });
 
 router.afterEach(() => {

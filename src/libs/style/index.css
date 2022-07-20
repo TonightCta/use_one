@@ -1,0 +1,24 @@
+.mint-spinner-triple-bounce {
+    margin-right: 12px;
+}
+
+.el-loading-spinner .path {
+    stroke: #2CBC94;
+}
+
+.no-data {
+    font-size: 14px;
+    color: #666 !important;
+    padding: 24px 0;
+    text-align: center;
+}
+
+.flex-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.p-t-40 {
+    padding-top: 40px;
+}

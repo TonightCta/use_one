@@ -3,10 +3,10 @@
     <Navigation />
     <!-- 前置验证 -->
     <div class="trade-before-auth" v-if="status == 0">
-      <h3>邮箱验证码</h3>
+      <h3>{{ current.account.type == 1 ? "手机" : "邮箱" }}验证码</h3>
       <p class="before-remark">为保护您的账号安全，需要登录密码进行验证</p>
       <P-verification v-model="valBefore" />
-      <p v-if="count == 0" @click="count = 60" class="send-code un-send">
+      <p v-if="count == 0" @click="sendAuthCode()" class="send-code un-send">
         获取验证码
       </p>
       <B-data-theCountdown v-model="count" v-else class="send-code"
@@ -14,7 +14,11 @@
       >
     </div>
     <div class="set-trade-password" v-else>
-      <h3>设置交易密码</h3>
+      <h3>
+        {{
+          current.account.security.pay_password == 1 ? "修改" : "设置"
+        }}交易密码
+      </h3>
       <p class="before-remark">8-12位大写、小写英文字母及数字组合</p>
       <div class="form-box">
         <el-form
@@ -70,6 +74,8 @@
 <script>
 import { Toast } from "vant";
 import { checkPassword } from "../../../utils/index";
+import { SendCode, VerifyCode, SetTradePass } from "../../../api/api";
+import { mapState } from "vuex";
 export default {
   data() {
     const verify_pass = (rule, value, callback) => {
@@ -92,6 +98,7 @@ export default {
       isBindPhone: false, //未绑定提示
       valBefore: "", //前置验证码
       count: 0, //验证码倒计时
+      codeLocal: null,
       form: {
         password: "",
         repeat: "",
@@ -120,6 +127,9 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapState(["current"]),
+  },
   watch: {
     valBefore(val) {
       if (val.length == 6) {
@@ -127,21 +137,29 @@ export default {
           Toast.loading({
             message: "加载中...",
             forbidClick: true,
-            duration: 2000,
           });
-          if (!this.is_bind_phone) {
-            setTimeout(() => {
-              this.isBindPhone = true;
-            }, 2000);
+          const params = {
+            scene: 4,
+            receiver: this.current.account.phone,
+            code: val,
+          };
+          const result = await VerifyCode(params);
+          const { code } = result;
+          if (code != 200) {
+            this.$toast(result.message);
             return;
           }
-          setTimeout(() => {
-            this.status = 1;
-          }, 2000);
+          this.status = 1;
+          // setTimeout(() => {
+          // }, 2000);
         };
         next();
       }
     },
+  },
+  created() {
+    !this.current.account.phone && (this.isBindPhone = true);
+    this.current.account.phone && this.sendAuthCode();
   },
   components: {
     Navigation: (resolve) =>
@@ -150,11 +168,43 @@ export default {
   },
   methods: {
     submitSet(formName) {
-      this.$refs[formName].validate((res) => {
+      this.$refs[formName].validate(async (res) => {
         if (res) {
           console.log("验证通过");
+          const params = {
+            code: this.valBefore,
+            password: this.form.password,
+            password_confirmation: this.form.repeat,
+          };
+          const result = await SetTradePass(params);
+          console.log(result);
+          const { code } = result;
+          if (code != 200) {
+            this.$toast(result.message);
+            return;
+          }
+          this.$toast.success("交易密码设置成功");
+          this.$store.dispatch("current/upUserInfo");
+          this.$router.go(-1);
         }
       });
+    },
+    //发送验证验证码
+    async sendAuthCode() {
+      const params = {
+        scene: 4,
+        type: this.current.account.type,
+        email: this.current.account.email,
+        phone: this.current.account.phone,
+        phone_prefix: this.current.account.phone_prefix,
+      };
+      const result = await SendCode(params);
+      const { code } = result;
+      if (code != 200) {
+        this.$toast.fail(result.message);
+      } else {
+        this.count = 60;
+      }
     },
   },
 };

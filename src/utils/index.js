@@ -31,6 +31,7 @@ export async function interPrice(_rate, _data, _type) {
      * @param _rate 法币汇率
      * @param _data 计算数据
      * @param _type 数据格式
+     * 
      * @param _data => { //type == 0 && number:*,coinname:* } => { //type == 1 && coinname:number }
     */
     let price = [];

@@ -60,6 +60,15 @@ service.interceptors.response.use(
                 case 100040:
                     data.message = i18n.t('银行卡已被启用')
                     break;
+                case 100011:
+                    data.message = '谷歌验证码错误'
+                    break;
+                case 10050:
+                    data.message = '交易密码不能和登录密码一致'
+                    break;
+                case 100008:
+                    data.message = '密码错误'
+                    break;
             }
             return data;
         } else {

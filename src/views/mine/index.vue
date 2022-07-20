@@ -11,8 +11,8 @@
         <!-- <van-image width="39" height="39" :src="require('@/assets/touxiang.png')" round lazy-load /> -->
         <p>
           {{
-            current.account.email.substr(0, 2) ||
-            current.account.phone.substr(0, 2)
+            current.account?.email.substr(0, 2) ||
+            current.account?.phone.substr(0, 2)
           }}
         </p>
       </div>
@@ -64,7 +64,10 @@
         <div>
           <label>总资产估值</label>
           <dl class="ui-flex-dl">
-            <dt class="total-price">{{ Number(assets).toFixed(4) }}</dt>
+            <dt class="total-price">
+              <mt-spinner v-if="!assets" type="triple-bounce" color="#2CBC94"></mt-spinner>
+              <span v-else>{{ Number(assets).toFixed(4) }}</span>
+            </dt>
             <dd @click="bool.CurrencyOption = true">
               {{ current.amount_way }}
               <B-svg name="jianTouXia" class-name="icon-arrow" width="13px" />
@@ -134,7 +137,8 @@
           <li>
             <div class="ui-flex-1">
               <div class="val">
-                {{ daySell ? daySell.toFixed(2) : `0.00`}}{{current.way_symbol}}
+                {{ daySell ? daySell.toFixed(2) : `0.00`
+                }}{{ current.way_symbol }}
               </div>
               <label>出售金额</label>
             </div>
@@ -142,7 +146,8 @@
           <li>
             <div class="ui-flex-1">
               <div class="val">
-                {{ dayBuy ? dayBuy.toFixed(2) : `0.00` }}{{current.way_symbol}}
+                {{ dayBuy ? dayBuy.toFixed(2) : `0.00`
+                }}{{ current.way_symbol }}
               </div>
               <label>购买金额</label>
             </div>
@@ -172,7 +177,7 @@ export default {
       bool: {
         CurrencyOption: false,
       },
-      assets: 0, //资产
+      assets: '', //资产
       dayBuy: 0, //今日买入,
       daySell: 0, //今日卖出
       dayTotal: 0, //今日成交单数
@@ -224,7 +229,7 @@ export default {
     onCurrency(val) {
       this.typeCoin = val.coin;
       this.getAssets();
-      this.getPanel();  
+      this.getPanel();
     },
     //时间转化
     formatMin(_val) {
@@ -265,19 +270,11 @@ export default {
     getDayTrade(_data) {
       this.dayTotal = _data.total;
       const buy = async () => {
-        const price = await interPrice(
-          this.current.way_rate,
-          _data.buy,
-          1
-        );
+        const price = await interPrice(this.current.way_rate, _data.buy, 1);
         this.dayBuy = this.interArr(price);
       };
       const sell = async () => {
-        const price = await interPrice(
-          this.current.way_rate,
-          _data.sell,
-          1
-        );
+        const price = await interPrice(this.current.way_rate, _data.sell, 1);
         this.daySell = this.interArr(price);
       };
       JSON.stringify(_data.buy) !== "{}" && buy();
@@ -302,7 +299,7 @@ export default {
   .user-nick {
     width: 40px;
     height: 40px;
-    background: white;
+    background: #eee;
     border-radius: 50%;
     p {
       font-size: 22px;

@@ -30,6 +30,12 @@
       p:first-child {
         font-size: 22px;
         font-weight: bold;
+        display: flex;
+        justify-content: center;
+        span{
+            display: inline-block;
+            // transform: translateY(4px);
+        }
       }
       .label {
         margin: 0 4px;
@@ -77,6 +83,7 @@
     ul {
       padding: 0 12px;
       margin-bottom: 88px;
+      min-height: 300px;
       li {
         box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.08);
         margin-top: 12px;
@@ -115,6 +122,10 @@
           p {
             color: #666;
             font-size: 14px;
+          }
+          div:first-child{
+            min-width: 90px;
+            margin-right: 0;
           }
           div {
             text-align: left;

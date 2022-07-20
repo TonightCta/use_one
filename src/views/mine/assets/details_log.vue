@@ -1,54 +1,50 @@
 <!-- 资金流水详情 -->
 <template>
   <div class="details-log">
-    <Navigation :title="routeTitle" />
+    <Navigation :title="detailMsg.routeTitle" />
     <div
       class="log-content"
-      :class="[logType == 2 ? 'red-color' : 'green-color']"
+      :style="{color:detailMsg.color}"
     >
       <p class="iconfont icon-a-bianzu3 need-color" type="icon"></p>
-      <p class="title-ype need-color">
+      <p class="title-ype need-color" :style="{color:detailMsg.color}">
         {{
-          (logType == 1 && "充币成功") ||
-          (logType == 2 && "售出成功") ||
-          (logType == 3 && "买入成功")
+          detailMsg.routeTitle
         }}
       </p>
-      <p class="log-amount need-color">
-        {{ logType == 2 ? "-" : "+" }}
-        20.000 USDT
+      <p class="log-amount need-color" :style="{color:detailMsg.color}">
+        {{ detailMsg.amount > 0 ? "+" : " " }}
+        {{detailMsg.amount}}&nbsp;{{detailMsg.coin}}
       </p>
-      <p class="log-date">2022-12-14 14:35:12</p>
+      <p class="log-date">
+        {{detailMsg.time}}
+      </p>
       <div class="log-type type-shadow">
         <p>类型</p>
         <p>
-          {{
-            (logType == 1 && "普通充币") ||
-            (logType == 2 && "售出") ||
-            (logType == 3 && "买入")
-          }}
+          {{ detailMsg.tradeType }}
         </p>
       </div>
       <div class="order-msg type-shadow">
         <div class="log-type">
           <p>手续费</p>
-          <p>0.0000 USDT</p>
+          <p>{{detailMsg.fee}}&nbsp;{{detailMsg.coin}}</p>
         </div>
         <div class="log-type" v-if="logType == 1">
           <p>实际到账</p>
-          <p>0.0000 USDT</p>
+          <p>{{detailMsg.true_amount}}&nbsp;{{detailMsg.coin}}</p>
         </div>
         <div class="log-type" v-if="logType == 1">
           <p>链类型</p>
-          <p>ERC 20</p>
+          <p>{{detailMsg.protocol}}</p>
         </div>
         <div class="log-type" v-if="logType == 1">
           <p>交易哈希</p>
-          <p>ankchaducndk</p>
+          <p>{{detailMsg.txid}}</p>
         </div>
         <div class="log-type" v-if="logType != 1">
           <p>订单编号</p>
-          <p>ankchaducndk</p>
+          <p>{{detailMsg.order_sn}}</p>
         </div>
       </div>
     </div>
@@ -56,26 +52,41 @@
 </template>
 
 <script>
+import { AssetsDetails, Types } from "../../../api/api";
 export default {
   data() {
     return {
       // logType:1,
+      detailMsg:{}
     };
   },
   components: {
     Navigation: (resolve) =>
       require(["../../../components/nav/Navigation"], resolve),
   },
+  created() {
+    this.getAssetsDetails();
+  },
   computed: {
     logType() {
       return this.$route.query.type;
     },
-    routeTitle() {
-      return (
-        (this.logType == 1 && "充币详情") ||
-        (this.logType == 2 && "售出详情") ||
-        (this.logType == 3 && "买入详情")
-      );
+  },
+  methods: {
+    async getAssetsDetails() {
+      const ID = this.$route.query.type;
+      const result = await AssetsDetails(ID);
+      console.log(result);
+      const { data } = result;
+      this.detailMsg = data;
+      const types = await Types({ scene: "UsersSpotAssetsType" });
+      types.data.map.forEach((e) => {
+        if (data.type == e.val) {
+          this.$set(this.detailMsg,'routeTitle',`${e.name}成功`)
+          this.$set(this.detailMsg,'tradeType',e.name)
+          this.$set(this.detailMsg,'color',e.color)
+        }
+      });
     },
   },
 };
@@ -133,8 +144,8 @@ export default {
   .order-msg {
     margin-top: 8px;
     border-radius: 4px;
-    .log-type{
-        padding: 12px;
+    .log-type {
+      padding: 12px;
     }
   }
 }

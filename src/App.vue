@@ -36,6 +36,12 @@ export default {
     //     this.$store.replaceState(Object.assign({}, this.$store.state, JSON.parse(this.$Base64.decode(sessionStorage.getItem('YnB3ZW4uY24=')))))
     //     sessionStorage.removeItem("YnB3ZW4uY24=")
     // }
+    const a  = {"type":1,"email":"c13240891337@163.com","phone":"13240891337","phone_prefix":"852","nickname":"","status":1,"security":{"ga":0,"kyc":1,"pay_password":1}}
+    window.sessionStorage.setItem('amount_way','CNY');
+    window.sessionStorage.setItem('way_rate','6.7082');
+    window.sessionStorage.setItem('account',JSON.stringify(a));
+    window.sessionStorage.setItem('way_symbol','¥');
+
     const getRate = async () => {
       const result = await FaitRate(this.current.amount_way);
       const { data } = result;

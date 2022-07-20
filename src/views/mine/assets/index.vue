@@ -12,12 +12,20 @@
           <div>
             <div class="all-balance">
               <p>总资产折合(BTC)</p>
-              <p type="icon" class="iconfont icon-yanjing-3"></p>
+              <p type="icon" class="iconfont icon-yanjing-3" v-if="!visible" @click="visible = !visible"></p>
+              <p type="icon" class="iconfont icon-24gf-eyeHide" v-else @click="visible = !visible"></p>
             </div>
             <div class="balance-amount">
-              <p>{{ Number(price_btc).toFixed(6) }}</p>
+              <p>
+                <mt-spinner
+                  v-if="!price_btc"
+                  type="triple-bounce"
+                  color="white"
+                ></mt-spinner>
+                <span v-else>{{ visible ? Number(price_btc).toFixed(6) : '&prop;' }}</span>
+              </p>
               <p class="label">&asymp;</p>
-              <p>{{ current.way_symbol }}{{ totalPrice }}</p>
+              <p>{{ current.way_symbol }}{{ visible ? totalPrice : '&prop;' }}</p>
             </div>
           </div>
           <!-- 操作 -->
@@ -32,7 +40,6 @@
                   type="icon"
                   class="iconfont"
                   :class="oper.icon"
-                  @click="showPrice = !showPrice"
                 ></p>
                 <p>{{ oper.name }}</p>
               </li>
@@ -41,7 +48,7 @@
         </div>
         <!-- 搜索资产 -->
         <div class="search-assets">
-          <P-input placeholder="搜索">
+          <P-input placeholder="搜索" v-model="searchAssets">
             <template #icon>
               <div class="iconfont icon-fangdajing"></div>
             </template>
@@ -51,38 +58,61 @@
       <!-- 资产列表 -->
       <div class="assets-list">
         <van-pull-refresh v-model="loading" @refresh="onRefresh">
-          <ul>
-            <li
-              class=""
-              v-for="(assets, index) in assetsList"
-              :key="index"
-              @click="$router.push('/assets-details')"
-            >
-              <div class="coin-msg">
-                <div class="flex-box">
-                  <p class="coin-icon">
-                    <img :src="assets.logo" alt="">
-                  </p>
-                  <p class="coin-name">{{ assets.coin }}</p>
+          <div class="flex-box p-t-40" v-if="loadData">
+            <mt-spinner type="triple-bounce" color="#2CBC94"></mt-spinner>
+          </div>
+          <div v-else>
+            <ul v-if="assetsList.length != 0">
+              <li
+                class=""
+                v-for="(assets, index) in assetsList"
+                :key="index"
+                @click="
+                  $router.push({
+                    path: '/assets-details',
+                    query: {
+                      row: JSON.stringify(assets),
+                    },
+                  })
+                "
+              >
+                <div class="coin-msg">
+                  <div class="flex-box">
+                    <p class="coin-icon">
+                      <img :src="assets.logo" alt="" />
+                    </p>
+                    <p class="coin-name">{{ assets.coin }}</p>
+                  </div>
+                  <p class="iconfont icon-youjiantou" type="icon"></p>
                 </div>
-                <p class="iconfont icon-youjiantou" type="icon"></p>
-              </div>
-              <div class="amount-msg">
-                <div>
-                  <p>可用</p>
-                  <p>{{ assets.available }}</p>
+                <div class="amount-msg">
+                  <div>
+                    <p>可用</p>
+                    <p>{{ visible ? Number(assets.available).toFixed(4) : '&prop;' }}</p>
+                  </div>
+                  <div>
+                    <p>冻结</p>
+                    <p>{{ visible ? Number(assets.freeze).toFixed(4) : '&prop;' }}</p>
+                  </div>
+                  <div>
+                    <p>折合</p>
+                    <p>
+                      <mt-spinner
+                        type="triple-bounce"
+                        color="#2CBC94"
+                        v-if="!assets.price"
+                      ></mt-spinner>
+                      <span v-else
+                        >{{ current.way_symbol
+                        }}{{ visible ? Number(assets.price).toFixed(4) : '&prop;' }}</span
+                      >
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p>冻结</p>
-                  <p>{{ assets.freeze }}</p>
-                </div>
-                <div>
-                  <p>折合</p>
-                  <p>{{ assets.price }}</p>
-                </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+            <p class="no-data" v-else>暂无数据</p>
+          </div>
         </van-pull-refresh>
       </div>
     </div>
@@ -113,38 +143,30 @@ export default {
           url: "/release",
         },
       ],
-      assetsList: [
-        {
-          coinName: "USDT",
-          use: "1.2541122",
-          id: 1,
-          un_use: "1.25536",
-          amount: "0.000000",
-        },
-        {
-          coinName: "BTC",
-          use: "1.2541122",
-          id: 1,
-          un_use: "1.25536",
-          amount: "₹321,481.04",
-        },
-        {
-          coinName: "ETH",
-          use: "1.2541122",
-          id: 1,
-          un_use: "1.25536",
-          amount: "< ₹0.01",
-        },
-      ],
+      assetsList: [],
+      assetsSec: [],
       loading: false,
-      price_btc: "0.00",
-      showPrice: true,
+      price_btc: "",
+      searchAssets: "", //搜索资产
+      loadData: false,//加载动画
+      visible:true,//可视状态
     };
   },
   computed: {
     ...mapState(["current"]),
     totalPrice() {
       return Number(this.$route.query.total_price).toFixed(4);
+    },
+  },
+  watch: {
+    searchAssets(val) {
+      const search = () => {
+        this.assetsList = this.assetsSec.filter((e) => {
+          return e.coin.includes(val.toUpperCase());
+        });
+      };
+      val && search();
+      !val && (this.assetsList = this.assetsSec);
     },
   },
   created() {
@@ -157,6 +179,7 @@ export default {
   },
   methods: {
     onRefresh() {
+      this.getCoinList();
       setTimeout(() => {
         this.loading = false;
       }, 1000);
@@ -171,23 +194,23 @@ export default {
     },
     //获取资产列表
     async getCoinList() {
+      this.loadData = true;
       const result = await UserAssets();
-      console.log(result);
       let list_local = [];
       const { data } = result;
       for (let i in data) {
         list_local.push(data[i]);
       }
-      console.log(list_local);
       this.assetsList = list_local;
-      console.log(await oneInterPrice(this.current.way_rate, this.assetsList[0].available, this.assetsList[0].coin))
       this.assetsList.forEach(async (e) => {
         this.$set(
           e,
-          'price',
+          "price",
           await oneInterPrice(this.current.way_rate, e.available, e.coin)
         );
       });
+      this.assetsSec = this.assetsList;
+      this.loadData = false;
     },
   },
 };

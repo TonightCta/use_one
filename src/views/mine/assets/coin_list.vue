@@ -9,38 +9,18 @@
           <li v-for="(hot, index) in hotList" :key="index">{{ hot }}</li>
         </ul>
       </div>
-      <van-index-bar>
-        <van-index-anchor index="A" />
-        <div class="coin-msg">
-          <div class="flex-box">
-            <img :src="require('../../../assets/images/test.png')" alt="" />
-            <p>ARDR</p>
+      <van-index-bar :index-list="indexList" sticky>
+        <div v-for="(item, index) in list" :key="index">
+          <van-index-anchor :index="index">
+            {{index}}
+          </van-index-anchor>
+          <div class="coin-msg" v-for="(coin,index) in item" :key="index" @click="selectCoin(coin)">
+            <div class="flex-box">
+              <img :src="coin.logo" alt="" />
+              <p>{{coin.coin}}</p>
+            </div>
+            <p class="stop-recharge" v-if="coin.deposit == 0">暂停充币</p>
           </div>
-          <p class="stop-recharge">暂停充币</p>
-        </div>
-        <van-index-anchor index="B" />
-        <div class="coin-msg">
-          <div class="flex-box">
-            <img :src="require('../../../assets/images/test.png')" alt="" />
-            <p>BTC</p>
-          </div>
-          <p class="stop-recharge">暂停充币</p>
-        </div>
-        <van-index-anchor index="U" />
-        <div class="coin-msg">
-          <div class="flex-box">
-            <img :src="require('../../../assets/images/test.png')" alt="" />
-            <p>USDT</p>
-          </div>
-          <p class="stop-recharge">暂停充币</p>
-        </div>
-        <van-index-anchor index="X" />
-        <div class="coin-msg">
-          <div class="flex-box">
-            <img :src="require('../../../assets/images/test.png')" alt="" />
-            <p>XRP</p>
-          </div>
-          <p class="stop-recharge">暂停充币</p>
         </div>
       </van-index-bar>
     </div>
@@ -48,6 +28,7 @@
 </template>
 
 <script>
+import { SupportCoins } from "../../../api/api";
 export default {
   components: {
     Navigation: (resolve) =>
@@ -57,7 +38,30 @@ export default {
     return {
       hotList: ["USDT", "TRX", "BTC", "ENQ", "ETH", "BNB"],
       list: [],
+      indexList: [],
     };
+  },
+  created() {
+    this.getSupportCoins();
+  },
+  methods: {
+    //获取支持币种列表
+    async getSupportCoins() {
+      const result = await SupportCoins();
+      this.list = result.data.coins;
+      this.indexList = Object.keys(this.list);
+    },
+    //选择币种
+    selectCoin(_msg){
+      console.log(_msg);
+      const params = {
+        coin:_msg.coin,
+        logo:_msg.logo,
+        protocol:_msg.protocol_list
+      };
+      this.$store.commit('current/upCoin',params);
+      this.$router.go(-1);
+    }
   },
 };
 </script>
@@ -113,10 +117,10 @@ export default {
       border-radius: 50%;
       margin-right: 8px;
     }
-    .stop-recharge{
-        padding-right: 44px;
-        font-size: 14px;
-        color: #999;
+    .stop-recharge {
+      padding-right: 44px;
+      font-size: 14px;
+      color: #999;
     }
   }
 }

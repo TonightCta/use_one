@@ -152,8 +152,7 @@ export default {
                 if(code != 200){
                     this.$toast('登录异常，请稍后再试');
                     router.currentRoute
-                }
-                console.log(code,data);
+                };
                 this.$store.commit('current/upAccount',data)
                 this.$router.push({
                     path: this.ReturnUrl

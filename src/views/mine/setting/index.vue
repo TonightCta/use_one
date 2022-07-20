@@ -26,6 +26,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { Logout } from "../../../api/api";
 export default {
   components: {
     Navigation: (resolve) =>
@@ -55,13 +56,26 @@ export default {
     };
   },
   methods: {
-    turnLoginOut() {
-      const d = new Date();
-      const exdays = -1;
-      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-      const expires = "expires=" + d.toUTCString();
-      document.cookie = "Admin-Token='';" + expires;
-      this.$router.push('/')
+    async turnLoginOut() {
+      const result = await Logout();
+      const { code } = result;
+      if (code != 200) {
+        this.$toast(result.message);
+        return;
+      }
+      this.$toast.loading({
+        message: "退出中...",
+        forbidClick: true,
+        duration: 1500,
+      });
+      setTimeout(() => {
+        const d = new Date();
+        const exdays = -1;
+        d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+        const expires = "expires=" + d.toUTCString();
+        document.cookie = "Admin-Token='';" + expires;
+        this.$router.push("/");
+      }, 1000);
     },
   },
   mounted() {

@@ -15,7 +15,7 @@ const port = process.env.port || process.env.npm_config_port || 8080 // dev port
 
 module.exports = {
     // 基本路径 baseURL已经过时
-    publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
+    publicPath: "./",
     // 输出文件目录  build 时构建文件的目录 构建时传入 --no-clean 可关闭该行为
     outputDir: `dist/loomee-admin-web-${process.env.VUE_APP_OUTPUT_NAME}_${moment().format('YYYYMMDDHHmm')}`,
     // eslint-loader 是否在保存的时候检查

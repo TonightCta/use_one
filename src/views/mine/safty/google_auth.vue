@@ -14,18 +14,23 @@
               class="load-way"
               v-for="(load, index) in down.way"
               :key="`${index}-load`"
-            ></div>
+              @click="moveToPlay(load.url)"
+            >
+              <img  v-if="!load.icon" class="bg-img" :src="load.bg" alt="">
+              <img :src="load.bg" v-else class="small-bg" alt="">
+              <p v-if="load.icon">Android</p>
+            </div> 
           </div>
         </div>
         <p class="step-remark" style="margin-top: 20px">
           第二步：使用谷歌身份认证器APP扫描一下二维码，或添加密文进行手工验证
         </p>
-        <div class="qr-box">
-          <img :src="require('../../../assets/images/test.png')" alt="" />
+        <div class="qr-box" ref="auth-code">
+          <!-- <img :src="require('../../../assets/images/test.png')" alt="" /> -->
         </div>
         <div class="qr-text">
-          <p class="text-box">密文：JJJHTFCDRCVGhxbhsyxgu</p>
-          <P-copy value="JJJHTFCDRCVGhxbhsyxgu">
+          <p class="text-box">密文：{{ googleCode }}</p>
+          <P-copy :value="googleCode">
             <P-button type="primary">复制</P-button>
           </P-copy>
           <P-button type="primary">刷新</P-button>
@@ -34,18 +39,30 @@
           第三步：填写手机显示的动态密码以激活谷歌两步验证：
         </p>
         <p class="step-pass">
-          <input type="text" placeholder="请输入动态密码" />
+          <input
+            type="text"
+            v-model="authCodeLocal"
+            placeholder="请输入动态密码"
+          />
         </p>
       </div>
       <div>
-        <P-button type="primary" class="btn-primary h-44-i m-60-t-i"
+        <P-button
+          type="primary"
+          class="btn-primary h-44-i m-60-t-i"
+          @click="enableAuth"
           >启用</P-button
         >
       </div>
     </div>
     <!-- 解除验证器 -->
     <div class="remove-auth" v-else>
-      <el-form :model="form" ref="removeAuth" :rules="ruleForm" label-position="top">
+      <el-form
+        :model="form"
+        ref="removeAuth"
+        :rules="ruleForm"
+        label-position="top"
+      >
         <el-form-item prop="password">
           <P-input
             title="登录密码"
@@ -69,29 +86,41 @@
         >确认</P-button
       >
     </div>
-    <Alert title="提示" @click="$router.go(-1)" v-model="removeStatus" :cancelSwitch="false">
-      <p style="text-align:center;">谷歌认证解除成功</p>
+    <Alert
+      title="提示"
+      @click="$router.go(-1)"
+      v-model="removeStatus"
+      :cancelSwitch="false"
+    >
+      <p style="text-align: center">谷歌认证解除成功</p>
     </Alert>
   </div>
 </template>
 
 <script>
+import { GoogleAuthMsg, BindGoogleAuth,UnBindGoogleAuth } from "../../../api/api";
+import QRCode from "qrcodejs2";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       gooleType: 1, //1 - 设置 2 - 解除
-      removeStatus:false,
+      removeStatus: false,
       downWay: [
         {
           type: "Android：",
           way: [
             {
               type: "local",
-              url: "",
+              url: 'https://www.baidu.com',
+              icon:true,
+              bg:require('../../../assets/images/and_logo.png'),
             },
             {
               type: "play",
-              url: "",
+              url: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2',
+              icon:false,
+              bg:require('../../../assets/images/google_down.png'),
             },
           ],
         },
@@ -100,7 +129,9 @@ export default {
           way: [
             {
               type: "store",
-              url: "",
+              url: 'itms-apps://itunes.apple.com/app/id388497605?action=write-review',
+              icon:false,
+              bg: require('../../../assets/images/ios_down.png'),
             },
           ],
         },
@@ -125,21 +156,96 @@ export default {
           },
         ],
       },
+      googleCode: null, //谷歌验证器代码
+      qrCode: null, //谷歌验证器二维码
+      authCodeLocal: null, //用户谷歌验证码
     };
+  },
+  computed:{
+    ...mapState(['current'])
   },
   components: {
     Navigation: (resolve) =>
       require(["../../../components/nav/Navigation"], resolve),
-    Alert:resolve => require(['../../../components/Alert'],resolve)
+    Alert: (resolve) => require(["../../../components/Alert"], resolve),
+  },
+  created() {
+    this.gooleType = this.current.account.security.ga == 1 ? 2 : 1
+    this.current.account.security.ga != 1 && this.getGoogleMsg();
+  },
+  // mounted(){
+  //   this.$nextTick(() => {
+  //     this.createQRCode();
+  //   })
+  // },
+  watch: {
+    qrCode(val) {
+      val && this.createQRCode();
+    },
   },
   methods: {
     submitRemove(formName) {
-      this.$refs[formName].validate((res) => {
+      this.$refs[formName].validate(async (res) => {
         if (res) {
+          const params = {
+            code:this.form.authCode,
+            password:this.form.password
+          };
+          const result = await UnBindGoogleAuth(params);
+          console.log(result);
+          const { code } = result;
+          if(code == 200){
+            this.removeStatus = true;
+            this.$store.dispatch('current/upUserInfo')
+          }else{
+            this.$toast.fail(result.message)
+          }
           console.log("验证通过");
         }
       });
     },
+    //Google Play https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2
+    //获取谷歌验证器信息
+    async getGoogleMsg() {
+      const result = await GoogleAuthMsg();
+      this.googleCode = result.data.secret;
+      this.qrCode = result.data.qrcode;
+    },
+    //生成二维码
+    createQRCode() {
+      new QRCode(this.$refs["auth-code"], {
+        text: this.qrCode,
+        width: 128,
+        height: 128,
+        colorDark: "#333",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.L,
+      });
+    },
+    //启用谷歌验证器
+    async enableAuth() {
+      if (!this.authCodeLocal) {
+        this.$toast("请输入动态密码");
+        return;
+      }
+      if(this.authCodeLocal.length != 6){
+        this.$toast("请输入六位谷歌动态密码");
+        return;
+      }
+      const result = await BindGoogleAuth({ code: this.authCodeLocal });
+      console.log(result);
+      const { code } = result;
+      if (code == 200) {
+        this.$toast.success("谷歌验证器启用成功");
+        this.$store.dispatch("current/upUserInfo");
+        this.$router.go(-1);
+      }else{
+        this.$toast.fail(result.message)
+      }
+    },
+    moveToPlay(_url){
+      window.open(_url)
+    }
   },
 };
 </script>
@@ -174,6 +280,22 @@ export default {
         border-radius: 7px;
         background: black;
         margin-bottom: 10px;
+        .bg-img{
+          width: 100%;
+          height: 100%;
+        }
+        display: flex;
+        align-items: center;
+        .small-bg{
+          width: 18px;
+          height: 20px;
+          margin:0 8px;
+        }
+        p{
+          font-size: 14px;
+          font-weight: 500;
+          color: white;
+        }
       }
     }
   }

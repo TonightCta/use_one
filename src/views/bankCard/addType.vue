@@ -40,7 +40,7 @@ export default {
             })
         },
         async onList() {
-            const response = await API.GetData(this, 'card/map')
+            const response = await API.GetData(this, 'card/map');
             this.list = response
         }
     }

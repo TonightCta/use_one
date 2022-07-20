@@ -19,10 +19,14 @@ import '../libs/ViewUI/index'
 
 import '../libs/vant/index'
 
+import '../libs/style/index.css'
+
 import '../utils/axios'
 
+import { Spinner,InfiniteScroll } from 'mint-ui';
+
 import components from "@/components/index"
-Vue.use(components)
+Vue.use(components,InfiniteScroll)
 
 import less from 'less'
 Vue.use(less)
@@ -32,7 +36,8 @@ if (process.env.NODE_ENV === 'development') {
     mockXHR()
 }
 
-Vue.prototype.$Base64 = require('js-base64').Base64
+Vue.prototype.$Base64 = require('js-base64').Base64;
+Vue.component(Spinner.name, Spinner);
 
 import Directives from '../directives/index'
 Vue.use(Directives)

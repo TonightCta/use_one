@@ -88,7 +88,7 @@ export default {
       });
       const { code } = result;  
       if (code != 200) {
-        this.$toast("发送失败，请稍后再试");
+        this.$toast(result.message);
         this.count = 60;
         return;
       }
