@@ -8,9 +8,23 @@
         <div class="up-pic">
           <ul>
             <li v-for="(pic, index) in picList" :key="index">
-              <img :src="require('../../../assets/images/up_pic.png')" alt="" />
-              <p>{{ pic.title }}</p>
-              <input type="file" accept="image/*" />
+              <img
+                v-if="!pic.imgSrc"
+                :src="require('../../../assets/images/up_pic.png')"
+                class="up-icon"
+                alt=""
+              />
+              <p v-if="!pic.imgSrc">{{ pic.title }}</p>
+              <img :src="pic.imgSrc" v-if="pic.imgSrc" class="up-img" alt="" />
+              <input
+                type="file"
+                accept="image/*"
+                @change="test($event, index)"
+              />
+              <div class="re-up" v-if="pic.imgSrc">
+                <p class="iconfont icon-shangchuan-copy"></p>
+                <p>重新上传</p>
+              </div>
             </li>
           </ul>
         </div>
@@ -25,10 +39,12 @@
           <P-button
             type="primary"
             class="btn-primary default-btn"
-            @click="$emit('upStep', 1)"
+            @click="$emit('upStep', 0)"
             >上一步</P-button
           >
-          <P-button type="primary" class="btn-primary">下一步</P-button>
+          <P-button type="primary" class="btn-primary" @click="submitStepTwo"
+            >下一步</P-button
+          >
         </div>
       </div>
     </div>
@@ -36,6 +52,7 @@
 </template>
 
 <script>
+import { ChantStepTwo } from "../../../api/api";
 export default {
   data() {
     return {
@@ -43,17 +60,74 @@ export default {
         {
           title: "上传身份证人像面",
           file: "",
+          imgSrc: null,
         },
         {
           title: "上传身份证国徽面",
           file: "",
+          imgSrc: null,
         },
         {
           title: "上传手持身份证",
           file: "",
+          imgSrc: null,
         },
       ],
     };
+  },
+  methods: {
+    test($e, index) {
+      console.log($e.target.files[0]);
+      const file = $e.target.files[0];
+      let imgSrc;
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = (temp) => {
+        imgSrc = temp.target.result;
+        console.log(imgSrc);
+        this.$set(this.picList[index], "file", file);
+        this.$set(this.picList[index], "imgSrc", imgSrc);
+      };
+
+      console.log(this.picList);
+    },
+    //上传身份文件
+    async submitStepTwo() {
+    //   console.log(213);
+    //   this.picList.forEach((e) => {
+    //     if (!e.file) {
+    //       this.$toast("请上传身份文件");
+    //       return;
+    //     }
+    //   });
+      if (!this.picList[0].file) {
+        this.$toast("请上传身份证人像面");
+        return;
+      }
+      if (!this.picList[1].file) {
+        this.$toast("请上传身份证国徽面");
+        return;
+      }
+      if (!this.picList[2].file) {
+        this.$toast("请上传手持身份证");
+        return;
+      };
+      this.$toast.loading({
+        message:'加载中...',
+        forbidClick:true
+      })
+      const formdata = new FormData();
+      formdata.append("card_front", this.picList[0].file);
+      formdata.append("card_back", this.picList[1].file);
+      formdata.append("card_hand", this.picList[2].file);
+      const result = await ChantStepTwo(formdata);
+      const { code } = result;
+      if (code != 200) {
+        this.$toast(result.message);
+        return;
+      }
+      this.$emit("upStep", 2);
+    },
   },
 };
 </script>
@@ -96,9 +170,13 @@ export default {
           margin-top: 8px;
           color: #c3cad2;
         }
-        img {
+        .up-icon {
           width: 44px;
           height: 44px;
+        }
+        .up-img {
+          width: 100%;
+          height: 100%;
         }
         input {
           width: 100%;
@@ -107,6 +185,30 @@ export default {
           top: 0;
           left: 0;
           opacity: 0;
+          z-index: 200;
+        }
+        .re-up {
+          position: absolute;
+          z-index: 100;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.6);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          p {
+            // font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+          }
+          p:last-child {
+            color: white;
+            font-size: 12px;
+            transform: translateY(-12px);
+          }
+          .iconfont {
+            font-size: 32px;
+          }
         }
       }
     }

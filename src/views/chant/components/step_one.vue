@@ -57,7 +57,7 @@
                 >
                 </el-option>
               </el-select>
-              <p class="select-error" v-if="value">请选择与本人关系</p>
+              <p class="select-error" v-if="!value">请选择与本人关系</p>
             </div>
           </el-form-item>
           <el-form-item prop="address">
@@ -85,7 +85,9 @@
 </template>
 
 <script>
+import { ChantStepOne } from "../../../api/api";
 import { checkEmail } from "../../../utils/index";
+import { mapState } from "vuex";
 export default {
   data() {
     const verify_email = (rule, value, callback) => {
@@ -98,31 +100,27 @@ export default {
     return {
       options: [
         {
-          value: "父母",
-          label: "父母",
-        },
-        {
-          value: "配偶",
-          label: "配偶",
-        },
-        {
-          value: "朋友",
+          value: "1",
           label: "朋友",
         },
         {
-          value: "同事",
+          value: "2",
           label: "同事",
+        },
+        {
+          value: "3",
+          label: "亲属",
         },
       ],
       value: "",
       form: {
-        name: "", //真实姓名
-        phone: "", //手机号
-        email: "", //邮箱
-        contact: "", //紧急联系人
-        contact_phone: "", //紧急联系人电话
-        relation: "", //与本人的关系
-        address: "", //常用地址
+        name: null, //真实姓名
+        phone: null, //手机号
+        email: null, //邮箱
+        contact: null, //紧急联系人
+        contact_phone: null, //紧急联系人电话
+        relation: null, //与本人的关系
+        address: null, //常用地址
       },
       ruleForm: {
         name: [
@@ -174,12 +172,49 @@ export default {
       },
     };
   },
+  computed:{
+    ...mapState(['current'])
+  },
+  created(){
+    const msg = this.current.chantMsg;
+    console.log(msg.username)
+    this.value  = msg.emergency_contact_relation;
+    this.form = {
+        name: msg.username, //真实姓名
+        phone: msg.phone, //手机号
+        email: msg.email, //邮箱
+        contact: msg.emergency_contact, //紧急联系人
+        contact_phone: msg.emergency_contact_phone, //紧急联系人电话
+        relation:null,
+        address: msg.address, //常用地址
+    };
+  },
   methods: {
     submitStepOne(formName) {
-      this.$emit("upStep", 1);
-      return;
-      this.$refs[formName].validate((res) => {
+      //   this.$emit("upStep", 1);
+      //   return;
+      this.$refs[formName].validate(async (res) => {
         if (res) {
+          this.$toast.loading({
+            message: "加载中...",
+            forbidClick: true,
+          });
+          const params = {
+            username: this.form.name,
+            phone: this.form.phone,
+            email: this.form.email,
+            emergency_contact: this.form.contact,
+            emergency_contact_phone: this.form.contact_phone,
+            emergency_contact_relation: this.value,
+            address: this.form.address,
+          };
+          this.$store.commit('current/upChainMsg',params)
+          const result = await ChantStepOne(params);
+          const { code } = result;
+          if (code != 200) {
+            this.$toast(result.message);
+            return;
+          }
           console.log("验证通过");
           this.$emit("upStep", 1);
         }

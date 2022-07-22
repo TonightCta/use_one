@@ -42,9 +42,10 @@
           </ul>
         </div>
       </div>
-      <StepOne v-if="active == 1" @upStep="upStep"/>
-      <StepTwo v-if="active == 2"  @upStep="upStep"/>
-      <StepThree v-if="active == 3"  @upStep="upStep"/>
+      <StepOne v-if="active == 1" @upStep="upStep" />
+      <StepThree v-if="active == 2" @upStep="upStep" />
+      <StepTwo v-if="active == 3" @upStep="upStep" />
+      <Waiting v-if="active == 4"/>
     </div>
   </div>
 </template>
@@ -84,7 +85,7 @@ export default {
           step: 3,
         },
       ],
-      active: 1,
+      active: 4,
     };
   },
   components: {
@@ -93,29 +94,35 @@ export default {
     StepOne: (resolve) => require(["./components/step_one"], resolve),
     StepTwo: (resolve) => require(["./components/step_two"], resolve),
     StepThree: (resolve) => require(["./components/step_three"], resolve),
+    Waiting:(resolve) => require(['./components/waiting'],resolve)
   },
-  methods:{
-    upStep(_step){
-        console.log(_step);
-        switch (_step){
-            case 0:
-                this.$set(this.stepLine[1],'arrive',false);
-                this.$set(this.stepLine[2],'arrive',false);
-                this.active = 1;
-                break;
-            case 1:
-                // this.$set(this.stepLine[1],'arrive',true);
-                // this.$set(this.stepLine[2],'arrive',true);
-                this.active = 2;
-                break;
-            case 2:
-                // this.$set(this.stepLine[3],'arrive',true);
-                // this.$set(this.stepLine[4],'arrive',true);
-                this.active = 3;
-                break;
-        }
-    }
-  }
+  methods: {
+    upStep(_step) {
+      console.log(_step);
+      switch (_step) {
+        case 0:
+          this.$set(this.stepLine[1], "arrive", false);
+          this.$set(this.stepLine[2], "arrive", false);
+          this.active = 1;
+          break;
+        case 1:
+          // this.$set(this.stepLine[1],'arrive',true);
+          // this.$set(this.stepLine[2],'arrive',true);
+          this.active = 2;
+          break;
+        case 2:
+          // this.$set(this.stepLine[3],'arrive',true);
+          // this.$set(this.stepLine[4],'arrive',true);
+          this.active = 3;
+          break;
+        case 3:
+          this.active = 4;
+          this.$set(this.stepLine[1], "arrive", true);
+          this.$set(this.stepLine[2], "arrive", true);
+          break;
+      }
+    },
+  },
 };
 </script>
 

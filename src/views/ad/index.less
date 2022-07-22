@@ -1,0 +1,124 @@
+.adv-list-parent {
+  height: 80vh;
+  /deep/.van-pull-refresh{
+    height: 100%;
+  }
+  ul {
+    max-height: 80vh;
+    li {
+      padding: 6px 12px;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      .adv-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 12px;
+        .title-msg {
+          font-size: 14px;
+          color: #333;
+          font-weight: 500;
+          span {
+            width: 3px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 2px;
+            margin-right: 4px;
+          }
+        }
+        div {
+          display: flex;
+          align-items: center;
+          span {
+            margin-right: 4px;
+            font-size: 12px;
+          }
+        }
+      }
+      .adv-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .price-msg {
+          p:first-child {
+            margin-bottom: 4px;
+          }
+          p {
+            font-size: 12px;
+            color: #666;
+            span {
+              color: #999;
+              margin-right: 8px;
+            }
+          }
+        }
+        .price-limit {
+          text-align: right;
+          p:first-child {
+            font-size: 12px;
+            color: #999;
+            transform: scale(0.9);
+          }
+          .with-color {
+            font-size: 22px;
+            font-weight: 500;
+            span {
+              font-size: 14px;
+              margin-right: 2px;
+            }
+          }
+        }
+      }
+      .adv-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        .pay-way {
+          img {
+            width: 16px;
+            height: 16px;
+          }
+        }
+        .iconfont {
+          color: #999999;
+          font-size: 16px;
+        }
+      }
+    }
+    .green-color {
+      .adv-title {
+        p {
+          span {
+            background-color: #2cbc94;
+          }
+        }
+      }
+      .adv-content {
+        .price-limit {
+          .with-color {
+            color: #2cbc94;
+          }
+        }
+      }
+    }
+    .red-color {
+      .adv-title {
+        p {
+          span {
+            background-color: #fd5656;
+          }
+        }
+      }
+      .adv-content {
+        .price-limit {
+          .with-color {
+            color: #fd5656;
+          }
+        }
+      }
+    }
+  }
+}

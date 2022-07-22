@@ -16,7 +16,7 @@ export const ImgCode = p => get('/api/v1/captcha',p);
 //短信验证码
 export const SendCode = p => post('/api/v1/user/sendCode',p);
 //获取用户信息
-export const UserInfo = p => get('/api/v1/user/profile',p);
+export const UserInfo = p => get(`/api/v1/user/profile`);
 //用户面板信息
 export const UserPanel = p => get('/api/v1/user/panel',p);
 //用户资产
@@ -57,3 +57,30 @@ export const Logout = p => get('/api/v1/user/logout',p);
 export const SupportCoins = p => get('/api/v1/assets/coins',p);
 //充币地址
 export const CoinAddress = p => get(`/api/v1/assets/address/${p.coin}/${p.protocol}`);
+//成为商家前置条件
+export const ChantCondition = p => get('/api/v1/merchant/beforeApply',p);
+//商家申请基本信息一
+export const ChantStepOne = p => post('/api/v1/merchant/applyBase',p);
+//商家申请基本信息二
+export const ChantStepTwo = p => post('/api/v1/merchant/applyCard',p);
+//商家申请基本信息三
+export const ChantStepThree = p => post('/api/v1/merchant/applyVideo',p);
+//上传文件
+export const PublicUpFile = p => post('/api/v1/uploads',p);
+//设置昵称
+export const SetNickname = p => post('/api/v1/merchant/setMerchantName',p);
+//发布广告
+export const ReleaseAdv = p => post('/api/v1/merchant/adv/push',p);
+//币种行情价格
+export const CoinPrice = p => get('/api/v1/quotation/list',p);
+//支付卡列表
+export const CardMap = p => post('/api/v1/payments/list',p);
+//付款方式
+export const SupportPay = p => get('/api/v1/payments/map',p);
+//广告列表
+export const AdvList = p => post('/api/v1/merchant/adv/list',p);
+//更新广告状态
+export const UpAdvStatus = p => post('/api/v1/merchant/adv/status',p);
+//支持的币种列表
+export const CoinList = p => get('/api/v1/c2c/coins',p);
+

@@ -88,7 +88,7 @@
       </P-tabs-container>
     </div>
 
-    <P-suspension-add v-if="dropdown.value == 0" @click="goRelease"/>
+    <P-suspension-add v-if="dropdown.value == 0" @click="goRelease" />
     <MoneySafe v-model="dialog.show" />
     <P-popup v-model="bool.TopShow" :head="false">
       <van-cell-group :border="false">
@@ -105,11 +105,35 @@
       </van-cell-group>
     </P-popup>
     <Currency-Option v-model="bool.CurrencyOption" @click="onCurrency" />
+    <!-- 申请成为商家 -->
+    <Alert
+      title="提示"
+      v-model="bool.goChant"
+      @click="$router.push('/chant-application')"
+    >
+      <p class="text-center">您尚未成为商家，是否前往申请？</p>
+    </Alert>
+    <!-- 设置昵称 -->
+    <Alert
+      v-model="bool.setNickName"
+      title="设置昵称"
+      @click="submitNickname"
+      btnDetermineName="添加"
+    >
+      <div class="set-nickname">
+        <p>
+          <span class="iconfont icon-attention"></span>
+          发布广告需设置法币账户昵称，完成设置后不可修改。
+        </p>
+        <input type="text" placeholder="请输入昵称" v-model="nickname" />
+      </div>
+    </Alert>
   </P-main>
 </template>
 
 <script>
 import TheDropDownOptions from "@/components/TheDropDownOptions";
+import { SetNickname } from "../../api/api";
 import More from "./components/More";
 import MoneySafe from "./components/MoneySafe";
 import { mapState } from "vuex";
@@ -131,7 +155,10 @@ export default {
       bool: {
         TopShow: false,
         CurrencyOption: false,
+        setNickName: false, //设置昵称
+        goChant: false, //申请商家
       },
+      nickname: null, //商家昵称
       headNav: {
         active: 0,
         scroll: [0, 0],
@@ -195,12 +222,12 @@ export default {
       },
     },
   },
-  computed:{
-    ...mapState(['current'])
+  computed: {
+    ...mapState(["current"]),
   },
-  created(){
+  created() {
     this.typeCoin = this.current.amount_way;
-  },    
+  },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
   },
@@ -256,11 +283,42 @@ export default {
       console.log(action, index);
     },
     //发布广告
-    goRelease(){
-        //  href="/release"/
-        console.log(213);
-
-    }
+    goRelease() {
+      //  href="/release"/
+      if (!this.current.account.security) {
+        this.$router.push("/login?ReturnUrl=/");
+        return;
+      }
+      const { merchant } = this.current.account.security;
+      const { merchant_name } = this.current.account.merchantInfo;
+      console.log(merchant);
+      if (merchant == 0) {
+        this.bool.goChant = true;
+        return;
+      }
+      if (!merchant_name) {
+        this.bool.setNickName = true;
+        return;
+      };
+      this.$router.push('/release')
+    },
+    //设置昵称
+    async submitNickname() {
+      if (!this.nickname) {
+        this.$toast("请输入昵称");
+        return;
+      }
+      const result = await SetNickname({ merchant_name: this.nickname });
+      console.log(result);
+      const { code } = result;
+      if (code != 200) {
+        this.$toast(result.message);
+        return;
+      }
+      await this.$store.dispatch("current/upUserInfo");
+      this.$toast("设置成功");
+      this.$router.push("/release");
+    },
   },
   destroyed() {
     window.removeEventListener("scroll", this.handleScroll);
@@ -269,6 +327,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import url("./index.less");
 .head {
   height: 55px;
   padding: 23px 12px 0px 12px;

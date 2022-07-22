@@ -5,7 +5,8 @@ const state = {
     way_rate: window.sessionStorage.getItem('way_rate') || '0.00',//法币汇率,
     language: window.localStorage.getItem('locale') || 'zh',
     account: JSON.parse(window.sessionStorage.getItem('account')) || {},//用户信息
-    coin:JSON.parse(window.sessionStorage.getItem('coin')) || {coin:'USDT',logo:require('../../assets/images/u_icon.png'),protocol:['ERC20','TRC20']}
+    coin:JSON.parse(window.sessionStorage.getItem('coin')) || {coin:'USDT',logo:require('../../assets/images/u_icon.png'),protocol:['ERC20','TRC20']},
+    chantMsg:JSON.parse(window.sessionStorage.getItem('chantMsg')) || {},
 };
 const mutations = {
     upAmountWay: (state, opt) => {
@@ -31,6 +32,10 @@ const mutations = {
     upCoin:(state,opt) => {
         state.coin = opt;
         window.sessionStorage.setItem('coin',JSON.stringify(opt));
+    },
+    upChainMsg:(state,opt) => {
+        state.chantMsg = opt;
+        window.sessionStorage.setItem('chantMsg',JSON.stringify(opt));
     }
 }
 

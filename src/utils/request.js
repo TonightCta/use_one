@@ -69,6 +69,15 @@ service.interceptors.response.use(
                 case 100008:
                     data.message = '密码错误'
                     break;
+                case 100013:
+                    data.message = '账户USDT余额无法支付保证金'
+                    break;
+                case 100012:
+                    data.message = '交易流水总额不达标'
+                    break;
+                case 100016:
+                    data.message = '广告已经失效,无法操作'
+                    break;
             }
             return data;
         } else {

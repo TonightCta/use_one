@@ -68,6 +68,7 @@ export default {
         forbidClick: true,
         duration: 1500,
       });
+      window.sessionStorage.clear();
       setTimeout(() => {
         const d = new Date();
         const exdays = -1;
@@ -75,6 +76,7 @@ export default {
         const expires = "expires=" + d.toUTCString();
         document.cookie = "Admin-Token='';" + expires;
         this.$router.push("/");
+        window.location.reload();
       }, 1000);
     },
   },

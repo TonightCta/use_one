@@ -149,6 +149,8 @@ export default {
             if (response.code == 200) {
                 const result = await UserInfo(response.data.access_token);
                 const { code,data } = result;
+                console.log(result)
+                console.log(code)
                 if(code != 200){
                     this.$toast('登录异常，请稍后再试');
                     router.currentRoute

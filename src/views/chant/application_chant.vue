@@ -19,15 +19,29 @@
         </ul>
       </div>
       <p class="agree">
-        <van-checkbox  icon-size="14px" v-model="checked">我已阅读并同意<span>《商家协议》</span></van-checkbox>
+        <van-checkbox icon-size="14px" v-model="checked"
+          >我已阅读并同意<span>《商家协议》</span></van-checkbox
+        >
       </p>
-      <P-button type="primary" class="btn-primary" @click="confirm">开始申请</P-button>
+      <P-button type="primary" class="btn-primary" @click="confirm"
+        >开始申请</P-button
+      >
+      <Alert
+        title="提示"
+        v-model="unBindCradID"
+        @click="
+          unBindCradID = false;
+          $router.push('/auth-real');
+        "
+      >
+        <p style="text-align: center">您尚未完成实名认证，是否前往?</p>
+      </Alert>
     </div>
   </div>
 </template>
 
 <script>
-import { Toast } from 'vant'
+import { ChantCondition } from "../../api/api";
 export default {
   data() {
     return {
@@ -45,19 +59,33 @@ export default {
           text: "法币账户1000USDT作为商家保证金",
         },
       ],
-      checked:false
+      checked: false,
+      unBindCradID: false,
     };
   },
   components: {
     Navigation: (resolve) =>
       require(["../../components/nav/Navigation"], resolve),
   },
-  methods:{
+  methods: {
     // 开始申请
-    confirm(){
-        this.checked ? this.$router.push('/application-step') : Toast('请阅读并同意商家协议') 
-    }
-  }
+    async confirm() {
+      const next = async () => {
+        const result = await ChantCondition();
+        console.log(result);
+        100030;
+        const { code } = result;
+        if (code == 100030) {
+          this.unBindCradID = true;
+        } else if (code != 200) {
+          this.$toast(result.message);
+        } else {
+          this.$router.push("/application-step");
+        }
+      };
+      this.checked ? next() : this.$toast("请阅读并同意商家协议");
+    },
+  },
 };
 </script>
 
@@ -108,10 +136,10 @@ export default {
         text-align: left;
         margin-bottom: 20px;
         display: flex;
-        img{
-            width: 22px;
-            height: 22px;
-            margin-right: 10px;
+        img {
+          width: 22px;
+          height: 22px;
+          margin-right: 10px;
         }
         p {
           font-size: 16px;
@@ -120,23 +148,23 @@ export default {
       }
     }
   }
-  .agree{
+  .agree {
     margin-top: 48px;
-    span{
-        color: #4F6DFD;
-        font-weight: 500;
+    span {
+      color: #4f6dfd;
+      font-weight: 500;
     }
-    /deep/.van-icon{
-        line-height: 1;
+    /deep/.van-icon {
+      line-height: 1;
     }
-    /deep/.van-checkbox__label{
-        margin-left: 4px;
-        font-size: 14px;
+    /deep/.van-checkbox__label {
+      margin-left: 4px;
+      font-size: 14px;
     }
   }
-  .btn-primary{
+  .btn-primary {
     margin-top: 12px;
-    background: #6580FF;
+    background: #6580ff;
   }
 }
 </style>
