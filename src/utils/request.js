@@ -87,6 +87,15 @@ service.interceptors.response.use(
                 case 100024:
                     data.message = '超过最大限额'
                     break;
+                case 100051:
+                    data.message = '手机号格式错误'
+                    break;
+                case 100018:
+                    data.message = '广告数量不足'
+                    break;
+                case 100028:
+                    data.message = '非进行中的订单'
+                    break;
             }
             return data;
         } else {

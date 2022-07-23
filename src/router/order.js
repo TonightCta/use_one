@@ -1,6 +1,6 @@
 export default [
     {
-        path: '/pleasepayment/:id',
+        path: '/pleasepayment',
         name: 'pleasePayment',
         meta: {
             title: '请付款',
@@ -14,7 +14,7 @@ export default [
         component: resolve => require(['@/views/order/PleasePayment'], resolve)
     },
     {
-        path: '/payment/:id',
+        path: '/payment',
         name: 'payment',
         meta: {
             title: '请向卖家付款',

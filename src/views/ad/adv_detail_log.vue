@@ -160,6 +160,7 @@ export default {
 .log-list {
   /deep/.van-pull-refresh {
     height: 90vh;
+    overflow: auto;
   }
   ul {
     li {

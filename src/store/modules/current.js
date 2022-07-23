@@ -8,6 +8,7 @@ const state = {
     coin:JSON.parse(window.sessionStorage.getItem('coin')) || {coin:'USDT',logo:require('../../assets/images/u_icon.png'),protocol:['ERC20','TRC20']},
     chantMsg:JSON.parse(window.sessionStorage.getItem('chantMsg')) || {},//商家申请信息
     advID:window.sessionStorage.getItem('advID') || null,//广告详情ID
+    orderID:window.sessionStorage.getItem('orderID') || null,//订单ID
 
 };
 const mutations = {
@@ -42,6 +43,10 @@ const mutations = {
     upAdvID:(state,opt) => {
         state.advID = opt;
         window.sessionStorage.setItem('advID',opt);
+    },
+    upOrderID:(state,opt) => {
+        state.orderID = opt;
+        window.sessionStorage.setItem('orderID',opt);
     }
 }
 

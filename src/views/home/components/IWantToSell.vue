@@ -5,8 +5,8 @@
  * @LastEditTime: 2022-07-07 20:17:14
 -->
 <template>
-    <div>
-        <P-list ref="P-list" :footer="true" @refresh="onRefresh" @load="onList">
+  <div>
+    <!-- <P-list ref="P-list" :footer="true" @refresh="onRefresh" @load="onList">
             <template v-slot="{row, index}">
                 <template v-if="index == 0">
                     <Hemo-list btn-name="出售" color="#FD5656" :name="row.title" :Price="row.Price"
@@ -19,54 +19,182 @@
                     </Hemo-list>
                 </template>
             </template>
-        </P-list>
-        <BtnBuyingAndSelling v-model="bool.BuyingAndSelling" title="出售" :currency="value" />
-        <Alert v-model="bool.dialog" btn-determine-name="添加">
-            买家仅支持xxx向您付款，您需要添加并开启相应的收款方式。
-        </Alert>
+        </P-list> -->
+    <div class="c2c-list">
+      <van-pull-refresh v-model="loading" @refresh="onRefresh">
+        <ul>
+          <li v-for="(row, index) in list" :key="index">
+            <Hemo-list
+              btn-name="出售"
+              color="#FD5656"
+              :row="row"
+              @btnClick="btnClick(row)"
+            ></Hemo-list>
+          </li>
+        </ul>
+        <infinite-loading
+          spinner="spiral"
+          @infinite="loadMoreEvent"
+          :distance="0"
+        >
+          <div slot="spinner" class="p-top-40">
+            <mt-spinner type="triple-bounce" color="#2CBC94"></mt-spinner>
+          </div>
+        </infinite-loading>
+      </van-pull-refresh>
     </div>
+    <BtnBuyingAndSelling
+      v-model="bool.BuyingAndSelling"
+      title="出售"
+      :row="placeMsg"
+      :currency="value"
+    />
+    <Alert v-model="bool.dialog" btn-determine-name="添加">
+      买家仅支持xxx向您付款，您需要添加并开启相应的收款方式。
+    </Alert>
+  </div>
 </template>
 
 <script>
-import HemoList from '@/components/hemo-list'
-import BtnBuyingAndSelling from './BtnBuyingAndSelling'
+import HemoList from "@/components/hemo-list";
+import BtnBuyingAndSelling from "./BtnBuyingAndSelling";
+import { AdvTradeList, TradeVerify } from "../../../api/api";
+import InfiniteLoading from "vue-infinite-loading";
+import { mapState } from "vuex";
 
 export default {
-    components: {
-        HemoList, BtnBuyingAndSelling
+  components: {
+    HemoList,
+    BtnBuyingAndSelling,
+    InfiniteLoading,
+  },
+  props: {
+    value: {
+      type: [String, Number],
+      default: "",
     },
-    props: {
-        value: {
-            type: [String, Number],
-            default: ''
+    filterAmount: {
+      type: [String, Number],
+      default: null,
+    },
+    filterMents: {
+      type: [String, Number],
+      default: null,
+    },
+  },
+  data() {
+    return {
+      bool: {
+        BuyingAndSelling: false,
+        dialog: false,
+      },
+      list: [],
+      loading: false,
+      finished: false, //是否已加载完成，加载完成后不再触发load事件
+      refreshing: false,
+      page: 0,
+      loading: false,
+      list: [],
+      placeMsg: {},
+    };
+  },
+  watch: {
+    // value(val){
+    //   console.log(val)
+    // }
+    filterAmount(val) {
+      this.onList();
+      console.log(val);
+    },
+    filterMents(val) {
+      this.onList();
+      console.log(val);
+    },
+    currency(_val) {
+      this.onList();
+    },
+  },
+  computed: {
+    ...mapState(["current"]),
+    currency() {
+      return this.current.amount_way;
+    },
+  },
+  methods: {
+    async onList() {
+      console.log(1);
+      console.log(this.value);
+      const params = {
+        type: 2,
+        page: this.page,
+        limit: 10,
+        search: {
+          currency: this.current.amount_way,
+          coin: this.value,
+          payments: this.filterMents,
+          amount: this.filterAmount,
         },
+      };
+      const result = await AdvTradeList(params);
+      const { data } = result;
+      console.log(result);
+      this.list = data.list;
+      console.log(this.list);
+      return result;
     },
-    data() {
-        return {
-            bool: {
-                BuyingAndSelling: false,
-                dialog: false
-            },
-            list: [],
-            loading: false,
-            finished: false,//是否已加载完成，加载完成后不再触发load事件
-            refreshing: false,
+    // 加载更多
+    async loadMoreEvent($state) {
+      this.page += 1;
+      const result = await this.onList();
+      const { data } = result;
+      if (this.list.length == data.total) {
+        $state.complete();
+      } else {
+        $state.loaded();
+      }
+    },
+    onRefresh() {
+      this.page = 0;
+      this.onList();
+      setTimeout(() => {
+        this.loading = false;
+      }, 1000);
+    },
+    async btnClick(row) {
+      const result = await TradeVerify({ type: 1, advId: row.id });
+      console.log(result);
+      const { code, data } = result;
+      if (code == 100016) {
+        this.bool.dialog = true;
+        return;
+      } else if (code != 200) {
+        this.$toast(result.message);
+        return;
+      }
+      if (data.rules.kyc.required) {
+        if (!data.rules.kyc.val) {
+          this.$toast("您尚未完成实名认证");
+          return;
         }
-    },
-    methods: {
-        async onList() {
-            const response = await API.GetData(this, 'api/list')
-            const { code, items, total } = response
-            if (code == 200) {
-                this.$refs['P-list'].Add(items, total)
-            }
-        },
-        onRefresh() {
-            this.onList()
-        },
-        btnClick(row) {
-            this.bool.BuyingAndSelling = true;
+      }
+      if (data.rules.pay_password.required) {
+        if (!data.rules.pay_password.val) {
+          this.$toast("您尚未设置交易密码");
+          return;
         }
-    }
+      }
+      this.placeMsg = row;
+      console.log(this.placeMsg);
+      this.bool.BuyingAndSelling = true;
+    },
+  },
 };
 </script>
+<style lang="less" scoped>
+.c2c-list {
+  /deep/.van-pull-refresh {
+    height: 70vh;
+    overflow: auto;
+  }
+}
+</style>

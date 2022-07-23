@@ -72,6 +72,8 @@
       </div>
       <TheDropDownOptions
         v-if="dropdown.value == 0"
+        @filter-amount="filterAmountEv"
+        @filter-ments="filterMentsEv"
         :buyOrSell="headNav.active"
       />
       <Authentication />
@@ -81,7 +83,9 @@
       <P-tabs-container v-model="tabs.active" :list="tabs.list">
         <component
           :is="headNav.cmpName"
-          v-model="tabs.list[tabs.active].name"
+          v-model="filterCoin"
+          :filterAmount="filterAmount"
+          :filterMents="filterMents"
           :headNavActive="headNav.active"
         >
         </component>
@@ -133,7 +137,7 @@
 
 <script>
 import TheDropDownOptions from "@/components/TheDropDownOptions";
-import { SetNickname } from "../../api/api";
+import { SetNickname,CoinList } from "../../api/api";
 import More from "./components/More";
 import MoneySafe from "./components/MoneySafe";
 import { mapState } from "vuex";
@@ -167,13 +171,7 @@ export default {
       },
       tabs: {
         active: 0,
-        list: [
-          { name: "USDT", scroll: "" },
-          { name: "BTC", scroll: "" },
-          { name: "AITD", scroll: "" },
-          { name: "ETH", scroll: "" },
-          { name: "XRP", scroll: "" },
-        ],
+        list: [],
       },
       scroll: 0,
       dropdown: {
@@ -191,6 +189,8 @@ export default {
         { name: "我的商家信息" },
         { name: "收款方式管理" },
       ],
+      filterAmount:null,//过滤金额
+      filterMents:null,//过滤支付方式
     };
   },
   watch: {
@@ -224,14 +224,35 @@ export default {
   },
   computed: {
     ...mapState(["current"]),
+    filterCoin(){
+      return this.tabs.list[this.tabs.active]?.name
+    }
   },
   created() {
     this.typeCoin = this.current.amount_way;
+    this.getSupportCoin();
   },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
+    //获取支持的币种
+    async getSupportCoin(){
+      const result = await CoinList();
+      this.tabs.list = result.data.coins;
+      this.tabs.list.forEach(e => {
+        this.$set(e,'scroll','');
+        this.$set(e,'name',e.coin);
+      })
+    },
+    //过滤支付方式
+    filterMentsEv(_ments){
+      this.filterMents = _ments;
+    },
+    //过滤金额
+    filterAmountEv(_amount){
+      this.filterAmount = Number(_amount)
+    },
     onCurrency(val) {
       this.typeCoin = val.coin;
     },

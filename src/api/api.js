@@ -88,5 +88,19 @@ export const AdvDetail = p => get(`/api/v1/merchant/adv/get/${p}`);
 //广告修改
 export const AdvChange = p => post(`/api/v1/merchant/adv/update/${p.id}`,p);
 //广告订单记录
-export const AdvDetailLog = p => post(`/api/v1/merchant/adv/list/${p.id}`,p)
+export const AdvDetailLog = p => post(`/api/v1/merchant/adv/list/${p.id}`,p);
+//C2C广告列表
+export const AdvTradeList = p => post(`/api/v1/market/c2c/ads/${p.type}`,p);
+//支持的支付方式
+export const Payments = p => get('/api/v1/payments/map',p);
+//购买 / 出售 前验证
+export const TradeVerify = p => get(`/api/v1/c2c/order/before/${p.type}`,p);
+//下单
+export const PlaceOrder = p => post('/api/v1/c2c/order/place',p);
+//订单详情
+export const OrderDetails = p => get(`/api/v1/c2c/order/detail/${p.id}`);
+//取消订单
+export const CancelOrder = p => get(`/api/v1/c2c/order/cancel/${p.type}`,p);
+//订单列表
+export const OrderListService = p => post('/api/v1/order/c2c/list',p);
 

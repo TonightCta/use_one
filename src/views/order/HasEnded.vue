@@ -24,7 +24,7 @@
 
         <P-body type="Fei">
             <P-tabs-container v-model="tabs.active" :list="tabs.list">
-                <IWantToBuy></IWantToBuy>
+                <IWantToBuy :type="2" v-model="tabs.list[tabs.active].val"></IWantToBuy>
             </P-tabs-container>
         </P-body>
     </P-main>
@@ -33,16 +33,16 @@
 <script>
 export default {
     components: {
-        IWantToBuy: () => import("./components/IWantToBuy"),
+        IWantToBuy:() => import("./components/IWantToBuy"),
     },
     data() {
         return {
             tabs: {
                 active: 0,
                 list: [
-                    { name: '全部', badge: '9', scroll: '' },
-                    { name: '已完成', badge: '199', scroll: '' },
-                    { name: '已取消', scroll: '' }
+                    { name: '全部', badge: '9', scroll: '' ,val:0},
+                    { name: '已完成', badge: '199', scroll: '',val:3 },
+                    { name: '已取消', scroll: '',val:4}
                 ],
             },
             headNav: {

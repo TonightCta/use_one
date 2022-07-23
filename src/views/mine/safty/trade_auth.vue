@@ -202,6 +202,7 @@ export default {
       const { code } = result;
       if (code != 200) {
         this.$toast.fail(result.message);
+        this.count = 0;
       } else {
         this.count = 60;
       }
