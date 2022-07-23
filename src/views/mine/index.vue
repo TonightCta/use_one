@@ -65,7 +65,7 @@
           <label>总资产估值</label>
           <dl class="ui-flex-dl">
             <dt class="total-price">
-              <mt-spinner v-if="!assets" type="triple-bounce" color="#2CBC94"></mt-spinner>
+              <mt-spinner v-if="assets == null" type="triple-bounce" color="#2CBC94"></mt-spinner>
               <span v-else>{{ Number(assets).toFixed(4) }}</span>
             </dt>
             <dd @click="bool.CurrencyOption = true">
@@ -177,7 +177,7 @@ export default {
       bool: {
         CurrencyOption: false,
       },
-      assets: '', //资产
+      assets: null, //资产
       dayBuy: 0, //今日买入,
       daySell: 0, //今日卖出
       dayTotal: 0, //今日成交单数
@@ -246,6 +246,7 @@ export default {
       const { data } = result;
       const price = await interPrice(this.current.way_rate, data, 0);
       this.assets = this.interArr(price);
+      console.log(this.assets)
     },
     //获取面板基本信息
     async getPanel() {

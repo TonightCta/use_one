@@ -1,4 +1,5 @@
-import * as api from '../api/api'
+import * as api from '../api/api';
+import Vue from 'vue';
 //邮箱格式校验
 export function checkEmail(arg) {
     const rule = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
@@ -62,4 +63,16 @@ export async function getCoinPrice(_icon) {
     const { data } = result;
     const { list } = data;
     return list[_icon].price;
+}
+//类型设置
+export function setTypes(_list,_types){
+    _list.forEach((item) => {
+        _types.forEach(e => {
+            if(item.status == e.val){
+                Vue.prototype.$set(item,'status_text',e.name)
+            }
+        })
+    });
+    return _list;
+    
 }

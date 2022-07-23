@@ -70,7 +70,7 @@
             v-model="form.amount"
             :label="`${form.type == 2 ? '购买' : '出售'}数量`"
             label-width="60px"
-            :placeholder="`请输入${form.type == 2 ? '购买' : '出售'}数量`"
+            :placeholder="`请输入${form.type == 2 ? '购买' : '出售'}数量(${minAdvNumber}起)`"
             :border="false"
           >
             <template #extra>{{ form.coin }}</template>
@@ -120,7 +120,7 @@
                 class="input"
                 v-model="form.min_currency"
                 label-width="60px"
-                :placeholder="'最小' + minAdvNumber"
+                :placeholder="'最小' + minBuyPrice"
                 :border="false"
               >
                 <template #extra>{{ form.currency }}</template>
@@ -132,7 +132,7 @@
                 class="input"
                 v-model="form.max_currency"
                 label-width="60px"
-                placeholder="最大"
+                :placeholder="'最大' + maxBuyPrice.toFixed(2)"
                 :border="false"
               >
                 <template #extra>{{ form.currency }}</template>
@@ -170,8 +170,8 @@
       <div class="h-56"></div>
     </P-body>
     <div class="footer">
-      <P-button type="primary" class="btn-primary h-44-i" @click="onSubmit"
-        >发布广告</P-button
+      <P-button type="primary" class="btn-primary h-44-i" @click="onSubmit(changeID ? 2 : 1)"
+        >{{ changeID ? "修改" : "发布" }}广告</P-button
       >
     </div>
     <Currency-Option v-model="bool.CurrencyOption" @click="onCurrency" />
@@ -187,7 +187,7 @@
 <script>
 import CurrencyOption from "@/components/currency";
 import CurrencyOptionTwo from "@/components/currency/fiat";
-import { CoinPrice, FaitRate, ReleaseAdv } from "../../api/api";
+import * as api from "../../api/api";
 
 export default {
   components: {
@@ -229,7 +229,8 @@ export default {
       payWayID: null, //支付ID
       maxPrice: null, //单价最低限额
       minPrice: null, //单价最高价格
-      minAdvNumber: 1, //最小限额
+      minAdvNumber: 1, //最小限额交易量
+      minBuyPrice:1,//最小限额法币
       coinRow: {},
     };
   },
@@ -239,12 +240,46 @@ export default {
         ? this.minPrice.toFixed(4) + "-" + this.maxPrice.toFixed(4)
         : "输入交易价格";
     },
+    changeID() {
+      return this.$route.query.id;
+    },
+    maxBuyPrice(){
+      return Number(this.form.amount) * Number(this.form.price)
+    }
   },
   created() {
     // this.getCoinsPrice();
+    this.changeID && this.getAdvMsg();
   },
   mounted() {},
   methods: {
+    //获取广告信息
+    async getAdvMsg() {
+      const result = await api.AdvDetail(this.changeID);
+      console.log(result);
+      const { data } = result;
+      this.form = {
+        type: data.adv_type,
+        coin: data.coin,
+        currency: data.currency,
+        amount: data.amount, //购买数量
+        price_type: 1,
+        price: data.price, //购买价格
+        min_currency: data.min_currency, //最小限额
+        max_currency: data.max_currency, //最大限额
+        payments:data.payments[0].id,
+        comment: data?.comment,
+      };
+      this.payWay = data.payments[0].name;
+      this.payWayID = data.payments[0].id;
+      const coins = await api.CoinList();
+      coins.data.coins.forEach(e => {
+        if(data.coin == e.coin){
+          this.onCurrency(e)
+        }
+      })
+      this.getCoinsPrice();
+    },
     tabs(v) {
       this.form.type = v;
     },
@@ -268,13 +303,13 @@ export default {
       if (!this.form.coin || !this.form.currency) {
         return;
       }
-      const cur = await FaitRate(this.form.currency);
+      const cur = await api.FaitRate(this.form.currency);
       let uPrice;
       if (this.form.coin == "USDT") {
-        const u = await FaitRate("USD");
+        const u = await api.FaitRate("USD");
         uPrice = u.data.price;
       }
-      const result = await CoinPrice();
+      const result = await api.CoinPrice();
       this.coinPrice =
         cur.data.price *
         (this.form.coin == "USDT"
@@ -288,9 +323,17 @@ export default {
         this.coinPrice;
     },
     //发布广告
-    async onSubmit() {
+    async onSubmit(_type) {
+      /**
+       * @param _type = 1 & 发布
+       * @param _type = 2 & 修改
+      */
       if (!this.form.amount) {
         this.$toast("请输入购买数量");
+        return;
+      }
+      if(this.form.amount < this.minAdvNumber){
+        this.$toast(`该币种最小交易数量为${this.minAdvNumber}`);
         return;
       }
       if (!this.form.price) {
@@ -305,12 +348,16 @@ export default {
         this.$toast("请输入最小限额");
         return;
       }
-      if (this.form.min_currency < this.minAdvNumber) {
-        this.$toast(`该币种最小单笔限额为${this.minAdvNumber}`);
+      if (this.form.min_currency < this.minBuyPrice) {
+        this.$toast(`最小单笔限额为1`);
         return;
       }
       if (!this.form.max_currency) {
         this.$toast("请输入最大限额");
+        return;
+      }
+      if(this.form.max_currency > this.maxBuyPrice){
+        this.$toast('超出最大限额');
         return;
       }
       if (!this.payWayID) {
@@ -328,14 +375,16 @@ export default {
         max_currency: this.form.max_currency,
         payments: String(this.payWayID),
         comment: this.comment,
+        id:this.changeID
       };
-      const result = await ReleaseAdv(params);
+      const result = _type == 2 ? await api.AdvChange(params) :  await api.ReleaseAdv(params);
       console.log(result);
       const { code } = result;
       if (code != 200) {
         this.$toast(result.message);
         return;
-      }
+      };
+      this.$toast(_type == 2 ? '修改成功' : '发布成功')
       this.$router.go(-1);
     },
   },

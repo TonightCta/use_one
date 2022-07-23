@@ -100,7 +100,7 @@ const routes = [
                         keywords: '我的',
                         description: '我的'
                     },
-                    keepAlive: true,
+                    keepAlive: false,
                     permission: true
                 },
                 component: resolve => require(['@/views/mine/index'], resolve)

@@ -6,7 +6,9 @@ const state = {
     language: window.localStorage.getItem('locale') || 'zh',
     account: JSON.parse(window.sessionStorage.getItem('account')) || {},//用户信息
     coin:JSON.parse(window.sessionStorage.getItem('coin')) || {coin:'USDT',logo:require('../../assets/images/u_icon.png'),protocol:['ERC20','TRC20']},
-    chantMsg:JSON.parse(window.sessionStorage.getItem('chantMsg')) || {},
+    chantMsg:JSON.parse(window.sessionStorage.getItem('chantMsg')) || {},//商家申请信息
+    advID:window.sessionStorage.getItem('advID') || null,//广告详情ID
+
 };
 const mutations = {
     upAmountWay: (state, opt) => {
@@ -36,6 +38,10 @@ const mutations = {
     upChainMsg:(state,opt) => {
         state.chantMsg = opt;
         window.sessionStorage.setItem('chantMsg',JSON.stringify(opt));
+    },
+    upAdvID:(state,opt) => {
+        state.advID = opt;
+        window.sessionStorage.setItem('advID',opt);
     }
 }
 

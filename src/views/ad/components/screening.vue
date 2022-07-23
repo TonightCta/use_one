@@ -36,7 +36,8 @@
 </template>
  
  <script>
-import { CoinList } from "../../../api/api";
+import { CoinList, Types } from "../../../api/api";
+import { setTypes } from "../../../utils";
 export default {
   props: {
     value: {
@@ -52,9 +53,9 @@ export default {
           title: "类型",
           active: 0,
           list: [
-            { title: "全部", type: 0 },
-            { title: "购买", type: 2 },
-            { title: "出售", type: 1 },
+            { title: "全部", val: null },
+            { title: "购买", vla: 2 },
+            { title: "出售", val: 1 },
           ],
         },
         {
@@ -73,7 +74,7 @@ export default {
           title: "状态",
           active: 0,
           list: [
-            { title: "全部" },
+            { title: "全部" ,val:null},
             { title: "接单中" },
             { title: "已下架" },
             { title: "已完成" },
@@ -100,17 +101,21 @@ export default {
   },
   mounted() {},
   methods: {
+    //获取筛选币种列表 & Type设置
     async getCoinList() {
       const result = await CoinList();
+      const types = await Types({ scene: "AdsStatus" });
       let arr = [];
       result.data.coins.forEach((e) => {
         const item = {
           title: e.coin,
+          val: e.coin,
         };
         arr.push(item);
       });
-      arr.unshift({ title: "全部" });
+      arr.unshift({ title: "全部", val: null });
       this.list[1].list = arr;
+      this.list[2].list = setTypes(this.list[2].list,types.data.map);
     },
     resetFilter() {
       this.list.forEach((e) => {
@@ -119,15 +124,15 @@ export default {
     },
     turnFilter() {
       const params = {
-        type: this.list[0].list[this.list[0].active].title,
-        coin: this.list[1].list[this.list[1].active].title,
-        status: this.list[2].list[this.list[2].active].title,
+        type: this.list[0].list[this.list[0].active].val,
+        coin: this.list[1].list[this.list[1].active].val,
+        status: this.list[2].list[this.list[2].active].val,
       };
       this.$emit("click", params);
     },
     emitFilter(_item) {
-    //   this.$emit("click", _item.title);
-    //   console.log(_item);
+      //   this.$emit("click", _item.title);
+      //   console.log(_item);
     },
   },
 };

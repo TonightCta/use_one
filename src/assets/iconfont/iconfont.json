@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "30793049",
+      "name": "xiaoxi-7",
+      "font_class": "xiaoxi-7",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
       "icon_id": "1250",
       "name": "其它",
       "font_class": "qita",

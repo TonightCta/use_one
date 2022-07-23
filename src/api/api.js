@@ -83,4 +83,10 @@ export const AdvList = p => post('/api/v1/merchant/adv/list',p);
 export const UpAdvStatus = p => post('/api/v1/merchant/adv/status',p);
 //支持的币种列表
 export const CoinList = p => get('/api/v1/c2c/coins',p);
+//广告详情
+export const AdvDetail = p => get(`/api/v1/merchant/adv/get/${p}`);
+//广告修改
+export const AdvChange = p => post(`/api/v1/merchant/adv/update/${p.id}`,p);
+//广告订单记录
+export const AdvDetailLog = p => post(`/api/v1/merchant/adv/list/${p.id}`,p)
 

@@ -81,6 +81,7 @@
 import { mapState } from "vuex";
 import { CoinAssets, Types } from "../../../api/api";
 import InfiniteLoading from "vue-infinite-loading";
+import { setTypes } from "../../../utils";
 export default {
   data() {
     return {
@@ -166,6 +167,8 @@ export default {
           }
         });
       });
+      console.log(this.tradeList)
+      // this.tradeList = setTypes(this.tradeList,types.data.map)
       return result;
     },
   },

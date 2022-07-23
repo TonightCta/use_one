@@ -58,7 +58,13 @@
                 </div>
               </div>
               <!-- 广告信息 -->
-              <div class="adv-content">
+              <div
+                class="adv-content"
+                @click="
+                  $router.push('/advertisingfordetails');
+                  $store.commit('current/upAdvID', row.id);
+                "
+              >
                 <div class="price-msg">
                   <p>
                     <span>数量</span>{{ row.amount.toFixed(2) }}&nbsp;{{
@@ -86,7 +92,11 @@
                     <img :src="pay.logo" alt="" />
                   </p>
                 </div>
-                <div class="iconfont icon-qita" @click="operation(row)"></div>
+                <div
+                  class="iconfont icon-qita"
+                  @click="operation(row)"
+                  v-if="row.status == 1 || row.status == 2"
+                ></div>
               </div>
             </li>
           </ul>
@@ -150,6 +160,7 @@ import Screening from "./components/screening";
 import { mapState } from "vuex";
 import { SetNickname, AdvList, Types, UpAdvStatus } from "../../api/api";
 import InfiniteLoading from "vue-infinite-loading";
+import { setTypes } from "../../utils";
 export default {
   components: {
     AdvertisingList,
@@ -188,7 +199,6 @@ export default {
   },
   computed: {
     ...mapState(["current"]),
-    
   },
   created() {
     // this.getFilterAdv();
@@ -198,40 +208,16 @@ export default {
   methods: {
     //筛选类型
     getFilter(_params) {
-      console.log(_params);
-      // let arr = this.advList;
-      // let arr2 = [],arr3 = [],arr4 = [];
-      let arr2 = [];
-      if (_params != "全部") {
-        arr2 = this.advListSec.filter((item) => {
-          return (
-            item.type_text.includes(_params) || item.coin.includes(_params)
-          );
-        });
-      }
-      this.advList = arr2;
-      console.log(this.advList);
-      if (_params.coin != "全部") {
-        arr3 = this.advListSec.filter((item) => {
-          return item.coin.includes(_params.coin);
-        });
-      }
-      if (_params.status != "全部") {
-        arr4 = this.advListSec.filter((item) => {
-          return item.status_text.includes(_params.status);
-        });
-      }
-      [
-        //{ title: "", coin: "", status: "" },
-        { title: "", coin: "", status: "" },
-        //{ title: "", coin: "", status: "" },
-      ];
-      return;
+      this.getAdvList(_params);
       this.bool.Screening = false;
     },
     //获取广告列表
-    async getAdvList() {
-      const result = await AdvList({ page: this.page, limit: 10 });
+    async getAdvList(_params) {
+      const result = await AdvList({
+        page: this.page,
+        limit: 10,
+        search: _params ? _params : {},
+      });
       const types = await Types({ scene: "AdsStatus" });
       if (this.page > 1) {
         result.data.list.forEach((e) => {
@@ -243,16 +229,8 @@ export default {
       this.advList.forEach((e) => {
         this.$set(e, "checked", e.status == 1 ? true : false);
         this.$set(e, "type_text", e.type == 1 ? "出售" : "购买");
-        types.data.map.forEach((type) => {
-          if (e.status == type.val) {
-            this.$set(e, "status_text", type.name);
-          }
-        });
       });
-      this.advListSec = this.advList;
-      this.arr2 = this.advList;
-      this.arr3 = this.advList;
-      this.arr4 = this.advList;
+      this.advList = setTypes(this.advList,types.data.map)
       return result;
     },
     async loadMoreEvent($state) {
@@ -312,9 +290,17 @@ export default {
       this.bool.moreAndMore = true;
       this.advID = row.id;
     },
+    //更多操纵
     moreOperations(action, index) {
       if (index === 1) {
         this.bool.closeTheAd = true;
+      } else {
+        this.$router.push({
+          path: "/release",
+          query: {
+            id: this.advID,
+          },
+        });
       }
     },
     async onList() {

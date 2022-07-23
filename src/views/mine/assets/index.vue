@@ -18,7 +18,7 @@
             <div class="balance-amount">
               <p>
                 <mt-spinner
-                  v-if="!price_btc"
+                  v-if="price_btc == null"
                   type="triple-bounce"
                   color="white"
                 ></mt-spinner>
@@ -100,7 +100,7 @@
                       <mt-spinner
                         type="triple-bounce"
                         color="#2CBC94"
-                        v-if="!assets.price"
+                        v-if="assets.price == undefined"
                       ></mt-spinner>
                       <span v-else
                         >{{ current.way_symbol
@@ -146,7 +146,7 @@ export default {
       assetsList: [],
       assetsSec: [],
       loading: false,
-      price_btc: "",
+      price_btc: null,
       searchAssets: "", //搜索资产
       loadData: false,//加载动画
       visible:true,//可视状态

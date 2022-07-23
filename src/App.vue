@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <keep-alive v-if="$route.meta.keepAlive">
+    <!-- <keep-alive v-if="$route.meta.keepAlive">
       <router-view></router-view>
-    </keep-alive>
-    <router-view v-else></router-view>
+    </keep-alive> -->
+    <router-view></router-view>
 
     <!-- 开启底部安全区适配 -->
     <van-number-keyboard safe-area-inset-bottom />

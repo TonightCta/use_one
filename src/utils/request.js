@@ -78,6 +78,15 @@ service.interceptors.response.use(
                 case 100016:
                     data.message = '广告已经失效,无法操作'
                     break;
+                case 100017:
+                    data.message = '广告已经失效'
+                    break;
+                case 100020:
+                    data.message = '账户余额不足'
+                    break;
+                case 100024:
+                    data.message = '超过最大限额'
+                    break;
             }
             return data;
         } else {
