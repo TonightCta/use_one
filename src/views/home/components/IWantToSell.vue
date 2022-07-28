@@ -96,12 +96,14 @@ export default {
       loading: false,
       list: [],
       placeMsg: {},
+      coin:null,
     };
   },
   watch: {
-    // value(val){
-    //   console.log(val)
-    // }
+    value(val){
+      console.log(val);
+      this.onList()
+    },
     filterAmount(val) {
       this.onList();
       console.log(val);
@@ -114,6 +116,9 @@ export default {
       this.onList();
     },
   },
+  created(){
+    console.log(this.value)
+  },
   computed: {
     ...mapState(["current"]),
     currency() {
@@ -121,9 +126,10 @@ export default {
     },
   },
   methods: {
+    testRef(_val){
+      this.coin = _val;
+    },
     async onList() {
-      console.log(1);
-      console.log(this.value);
       const params = {
         type: 2,
         page: this.page,
@@ -137,7 +143,6 @@ export default {
       };
       const result = await AdvTradeList(params);
       const { data } = result;
-      console.log(result);
       this.list = data.list;
       console.log(this.list);
       return result;

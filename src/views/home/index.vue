@@ -80,16 +80,31 @@
     </van-sticky>
 
     <div class="body">
-      <P-tabs-container v-model="tabs.active" :list="tabs.list">
+      <van-tabs :active="tabs.active" animated>
+        <van-tab v-for="(tabCon,index) in tabs.list" :key="index">
+          <component
+            :is="headNav.cmpName"
+            v-model="filterCoin"
+            v-if="tabs.active == index"
+            :filterAmount="filterAmount"
+            :filterMents="filterMents"
+            :headNavActive="headNav.active"
+          >
+          </component>
+        </van-tab>
+      </van-tabs>
+      <!-- <P-tabs-container v-model="tabs.active" :list="tabs.list">
         <component
           :is="headNav.cmpName"
           v-model="filterCoin"
           :filterAmount="filterAmount"
           :filterMents="filterMents"
           :headNavActive="headNav.active"
+          ref="test-ref"
         >
         </component>
-      </P-tabs-container>
+      </P-tabs-container> -->
+      <div class="tabs-mine"></div>
     </div>
 
     <P-suspension-add v-if="dropdown.value == 0" @click="goRelease" />
@@ -137,7 +152,7 @@
 
 <script>
 import TheDropDownOptions from "@/components/TheDropDownOptions";
-import { SetNickname,CoinList } from "../../api/api";
+import { SetNickname, CoinList } from "../../api/api";
 import More from "./components/More";
 import MoneySafe from "./components/MoneySafe";
 import { mapState } from "vuex";
@@ -189,8 +204,8 @@ export default {
         { name: "我的商家信息" },
         { name: "收款方式管理" },
       ],
-      filterAmount:null,//过滤金额
-      filterMents:null,//过滤支付方式
+      filterAmount: null, //过滤金额
+      filterMents: null, //过滤支付方式
     };
   },
   watch: {
@@ -224,9 +239,9 @@ export default {
   },
   computed: {
     ...mapState(["current"]),
-    filterCoin(){
-      return this.tabs.list[this.tabs.active]?.name
-    }
+    filterCoin() {
+      return this.tabs.list[this.tabs.active]?.name;
+    },
   },
   created() {
     this.typeCoin = this.current.amount_way;
@@ -236,22 +251,25 @@ export default {
     window.addEventListener("scroll", this.handleScroll);
   },
   methods: {
+    testTab(_val) {
+      this.$refs["test-ref"].testRef(this.tabs.list[_val].coin);
+    },
     //获取支持的币种
-    async getSupportCoin(){
+    async getSupportCoin() {
       const result = await CoinList();
       this.tabs.list = result.data.coins;
-      this.tabs.list.forEach(e => {
-        this.$set(e,'scroll','');
-        this.$set(e,'name',e.coin);
-      })
+      this.tabs.list.forEach((e) => {
+        this.$set(e, "scroll", "");
+        this.$set(e, "name", e.coin);
+      });
     },
     //过滤支付方式
-    filterMentsEv(_ments){
+    filterMentsEv(_ments) {
       this.filterMents = _ments;
     },
     //过滤金额
-    filterAmountEv(_amount){
-      this.filterAmount = Number(_amount)
+    filterAmountEv(_amount) {
+      this.filterAmount = Number(_amount);
     },
     onCurrency(val) {
       this.typeCoin = val.coin;
@@ -320,8 +338,8 @@ export default {
       if (!merchant_name) {
         this.bool.setNickName = true;
         return;
-      };
-      this.$router.push('/release')
+      }
+      this.$router.push("/release");
     },
     //设置昵称
     async submitNickname() {

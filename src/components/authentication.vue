@@ -6,9 +6,9 @@
 -->
 
 <template>
-  <div>
+  <div v-if="current.account.security">
     <transition name="van-fade">
-      <div class="authentication ui-flex-center" v-show="current.account.security.kyc == 0 || current.account.security.pay_password == 0">
+      <div class="authentication ui-flex-center" v-if="current.account?.security.kyc == 0 || current.account?.security.pay_password == 0">
         <div class="ui-flex-left m-30-r">
           <div>
             <B-svg name="ganTanYuan" class-name="ganTanYuan"></B-svg>

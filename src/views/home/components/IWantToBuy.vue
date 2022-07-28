@@ -103,12 +103,14 @@ export default {
       loading: false,
       list: [],
       placeMsg: {}, //下单信息
+      coin:null,
     };
   },
   watch: {
-    // value(val){
-    //   console.log(val)
-    // }
+    value(val){
+      console.log(val)
+      this.onList()
+    },
     filterAmount(val) {
       this.onList();
       console.log(val);
@@ -132,24 +134,24 @@ export default {
     },
   },
   methods: {
+    testRef(_val){
+      this.coin = _val;
+    },
     //获取交易列表
-    async onList() {
-      console.log(1);
-      console.log(this.value);
+    async onList(_coin) {
       const params = {
         type: 1,
         page: this.page,
         limit: 10,
         search: {
           currency: this.current.amount_way,
-          coin: this.value,
+          coin: this.coin ? this.coin : this.value,
           payments: this.filterMents,
           amount: this.filterAmount,
         },
       };
       const result = await AdvTradeList(params);
       const { data } = result;
-      console.log(result);
       this.list = data.list;
       console.log(this.list);
       return result;
@@ -198,7 +200,6 @@ export default {
         }
       };
       this.placeMsg = row;
-      console.log(this.placeMsg);
       this.bool.BuyingAndSelling = true;
     },
   },
