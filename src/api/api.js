@@ -103,4 +103,3 @@ export const OrderDetails = p => get(`/api/v1/c2c/order/detail/${p.id}`);
 export const CancelOrder = p => get(`/api/v1/c2c/order/cancel/${p.type}`,p);
 //订单列表
 export const OrderListService = p => post('/api/v1/order/c2c/list',p);
-
